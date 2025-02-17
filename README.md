@@ -1,6 +1,6 @@
 # Flex Net Sim Backend API
 
-This is a Flask-based backend API that runs the Flex Net Sim C++ library.
+This is a Flask-based backend API that runs the FlexNetSim C++ library. It is an unofficial API that powers the backend for the web app deployed at [www.in-progress.com](www.in-progress.com).
 
 ## Prerequisites
 
@@ -46,14 +46,14 @@ This is a Flask-based backend API that runs the Flex Net Sim C++ library.
     ```bash
     curl -X POST -H "Content-Type: application/json" \
      -d '{
-          "algorithm": "BestFit",
-          "networkType": 2,
-          "goal_connections": 50000,
-          "confidence": 0.01,
-          "lambda": 1.5,
-          "mu": 8,
-          "network": "USNet",
-          "bitrate": "100Gbps"
+          "algorithm": "FirstFit",
+          "networkType": 1, -> (Only EONs available for the moment)
+          "goal_connections": 10000000,
+          "confidence": 0.05,
+          "lambda": 120,
+          "mu": 1,
+          "network": "NSFNet",
+          "bitrate": "bitrate" -> (filename in the ./bitrates folder)
          }' \
      http://127.0.0.1:5000/run_simulation
     ```
