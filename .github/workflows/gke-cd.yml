@@ -3,31 +3,87 @@ name: Deploy FNS API
 on:
   push:
     branches:
-      - master
+      - develop
   pull_request:
     branches:
-      - master
+      - develop
 
 jobs:
   deploy:
-    name: Build and Push Docker Image
+    name: Build, Push Docker Image & Deploy to Kubernetes
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+          export_default_credentials: true
 
-    - name: Set up Google CLoud CLI
-      uses: google-github-actions/setup-gcloud@v0
-      with:
-        service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-        project_id: ${{ secrets.GOOGLE_PROJECT }}
-        export_default_credentials: true
+      - name: Configure Docker to push to Artifact Registry
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
-    - name: Build and push Docker image
-      env:
-        GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
-      run: |
-        gcloud auth configure-docker us-central1-docker.pkg.dev
-        docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT/flex-net-sim-repo/fns-api:latest .
-        docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT/flex-net-sim-repo/fns-api:latest
+      - name: Build and Push Docker image to Artifact Registry
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          IMAGE_NAME: us-central1-docker.pkg.dev/$GOOGLE_PROJECT/flex-net-sim-repo/fns-api
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+
+      - name: Get Kubernetes cluster credentials
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          CLUSTER_NAME: flex-net-sim-cluster
+          CLUSTER_REGION: us-central1
+        run: |
+          gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION --project $GOOGLE_PROJECT
+
+      - name: Deploy to Kubernetes cluster
+        env:
+          DEPLOYMENT_NAME: fns-api-deployment
+          NAMESPACE: default # Replace with your namespace if needed
+          IMAGE_NAME: us-central1-docker.pkg.dev/$GOOGLE_PROJECT/flex-net-sim-repo/fns-api
+          IMAGE_TAG: latest
+        run: |
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: $DEPLOYMENT_NAME
+            namespace: $NAMESPACE
+          spec:
+            replicas: 2 # Adjust as needed
+            selector:
+              matchLabels:
+                app: fns-api
+            template:
+              metadata:
+                labels:
+                  app: fns-api
+              spec:
+                containers:
+                - name: fns-api-container
+                  image: $IMAGE_NAME:$IMAGE_TAG
+                  ports:
+                  - containerPort: 8080 # Replace with your application port
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: fns-api-service
+            namespace: $NAMESPACE
+          spec:
+            selector:
+              app: fns-api
+            ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 8080 # Replace with your application port
+            type: LoadBalancer
+          EOF

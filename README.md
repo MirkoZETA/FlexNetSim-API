@@ -1,6 +1,6 @@
 # Flex Net Sim Backend API
 
-This is a Flask-based backend API that runs the FlexNetSim C++ library. It is an unofficial API that powers the backend for the web app deployed at [www.in-progress.com](www.in-progress.com).
+Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application deployed at [www.in-progress.com](www.in-progress.com). This unofficial API facilitates seamless interaction between the simulation engine and the web interface.
 
 ## Prerequisites
 
