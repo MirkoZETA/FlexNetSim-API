@@ -12,7 +12,7 @@ COPY networks ./networks
 COPY bitrates ./bitrates
 
 
-RUN g++ -O3 -o simulation.out ./src/main.cpp
+# RUN g++ -O3 -o simulation.out ./src/main.cpp
 
 # - 'backend:app' especifica el módulo 'backend.py' y la instancia de Flask 'app'.
 # - '--bind 0.0.0.0:8080' hace que Gunicorn escuche en todas las interfaces (0.0.0.0) en el puerto 8080 dentro del contenedor.

@@ -1,14 +1,14 @@
-# Flask Simulation Backend API
+# Flex Net Sim Backend API
 
-This is a Flask-based backend API that runs C++ library Flex Net Sim.
+This is a Flask-based backend API that runs the Flex Net Sim C++ library.
 
 ## Prerequisites
 
 *   Python 3.9 or higher
 *   g++ (GNU C++ Compiler)
 *   Docker (for containerization)
-*   Google Cloud SDK (for deployment to GKE)
-*   A Google Cloud Project with Google Kubernetes Engine (GKE) and Google Container Registry (GCR) enabled.
+*   Google Cloud SDK (for deployment to GKE) -> In progress.
+*   A Google Cloud Project with Google Kubernetes Engine (GKE) and Google Container Registry (GCR) enabled -> In progress.
 
 ## Getting Started (Local Development)
 
@@ -30,16 +30,13 @@ This is a Flask-based backend API that runs C++ library Flex Net Sim.
     pip install -r requirements.txt
     ```
 
-4.  **Compile the C++ simulation (this happens automatically on startup):**
-    When you run the Flask backend for the first time, it will compile `main.cpp` to `simulation.out`.
-
-5.  **Run the Flask backend:**
+4.  **Run the Flask backend:**
     ```bash
-    python backend.py
+    flask --app backend run
     ```
     The backend will be accessible at `http://127.0.0.1:5000`.
 
-6.  **Send simulation requests using `curl` or a frontend application:**
+5.  **Send simulation requests using `curl` or a frontend application:**
     Example `curl` request:
     ```bash
     curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' [http://127.0.0.1:5000/run_simulation](http://127.0.0.1:5000/run_simulation)
@@ -50,4 +47,13 @@ This is a Flask-based backend API that runs C++ library Flex Net Sim.
 To build the Docker image:
 
 ```bash
-docker build -t mi-backend-simulacion .
+docker build -t fns-api .
+```
+To run:
+```bash
+docker run -p 8080:8080 fns-api
+```
+To stop:
+```bash
+docker stop fns-api
+```
