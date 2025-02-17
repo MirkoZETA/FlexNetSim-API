@@ -1,6 +1,6 @@
 # Flex Net Sim Backend API
 
-Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application deployed at [www.in-progress.com](www.in-progress.com). This unofficial API facilitates seamless interaction between the simulation engine and the web interface.
+Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application deployed at [www.in-progress.com](www.in-progress.com). While unofficial, it serves as a bridge between the simulation engine and the web interface.
 
 ## Prerequisites
 
