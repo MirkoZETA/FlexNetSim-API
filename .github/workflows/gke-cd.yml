@@ -1,62 +1,33 @@
-name: Backend CI/CD to GKE
+name: Deploy FNS API
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build-and-push-docker:
+  deploy:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-
     steps:
+
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
+    - name: Set up Google CLoud CLI
+      uses: google-github-actions/setup-gcloud@v0
       with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }} # Configure this secret in GitHub Actions
-        project_id: ${{ secrets.GKE_PROJECT_ID }} # Configure this secret in GitHub Actions
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT_ID }}
+        export_default_credentials: true
 
-    - name: Enable Docker Credential Helper
-      run: |-
-        gcloud auth configure-docker
-
-    - name: Build Docker image
-      run: |-
-        docker build --tag gcr.io/${{ secrets.GKE_PROJECT_ID }}/mi-backend-simulacion:${GITHUB_SHA} .
-
-    - name: Push Docker image to GCR
-      run: |-
-        docker push gcr.io/${{ secrets.GKE_PROJECT_ID }}/mi-backend-simulacion:${GITHUB_SHA}
-
-  deploy-to-gke:
-    name: Deploy to GKE
-    needs: build-and-push-docker
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }} # Configure this secret in GitHub Actions
-        project_id: ${{ secrets.GKE_PROJECT_ID }} # Configure this secret in GitHub Actions
-        cluster_name: tu-cluster-gke # Reemplaza with your GKE cluster name
-        cluster_zone: tu-zona-gke # Reemplaza with your GKE cluster zone
-
-    - name: Get Kubernetes credentials
-      run: |-
-        gcloud container clusters get-credentials tu-cluster-gke --zone tu-zona-gke --project ${{ secrets.GKE_PROJECT_ID }} # Reemplaza with your cluster and zone
-
-    - name: Deploy to GKE (Ejemplo Básico - Necesitas Adaptar!)
-      run: |-
-        # This is a VERY basic example. YOU MUST ADAPT THIS TO YOUR KUBERNETES DEPLOYMENT.
-        # Normally you would use a Kubernetes Deployment YAML file and kubectl apply -f deployment.yaml
-        # Here, we just update the image of an existing Deployment named 'mi-backend-deployment' (example).
-        kubectl set image deployment/mi-backend-deployment mi-backend-container=gcr.io/${{ secrets.GKE_PROJECT_ID }}/mi-backend-simulacion:${GITHUB_SHA}
+    - name: Build and push Docker image
+      env:
+        GOOGLE_PROJECT: ${{ secrets.GKE_PROJECT_ID }}
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        docker build -t us-central1-docker.pkg.dev/flex-net-sim/flex-net-sim-repo/fns-api:latest .
+        docker push us-central1-docker.pkg.dev/flex-net-sim/flex-net-sim-repo/fns-api:latest
