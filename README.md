@@ -37,9 +37,25 @@ This is a Flask-based backend API that runs the Flex Net Sim C++ library.
     The backend will be accessible at `http://127.0.0.1:5000`.
 
 5.  **Send simulation requests using `curl` or a frontend application:**
-    Example `curl` request:
+    Example `curl` request with minimal parameters (defaults applied):
     ```bash
     curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' [http://127.0.0.1:5000/run_simulation](http://127.0.0.1:5000/run_simulation)
+    ```
+
+    Example `curl` request with all parameters specified
+    ```bash
+    curl -X POST -H "Content-Type: application/json" \
+     -d '{
+          "algorithm": "BestFit",
+          "networkType": 2,
+          "goal_connections": 50000,
+          "confidence": 0.01,
+          "lambda": 1.5,
+          "mu": 8,
+          "network": "USNet",
+          "bitrate": "100Gbps"
+         }' \
+     http://127.0.0.1:5000/run_simulation
     ```
 
 ## Dockerization
