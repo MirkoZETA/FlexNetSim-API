@@ -3,10 +3,10 @@ name: Deploy FNS API
 on:
   push:
     branches:
-      - master
+      - develop
   pull_request:
     branches:
-      - master
+      - develop
 
 jobs:
   deploy:
