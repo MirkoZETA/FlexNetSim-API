@@ -3,10 +3,10 @@ name: Deploy FNS API
 on:
   push:
     branches:
-      - develop
+      - master
   pull_request:
     branches:
-      - develop
+      - master
 
 jobs:
   deploy:
@@ -26,6 +26,15 @@ jobs:
         with:
           version: latest
           project_id: ${{ secrets.GOOGLE_PROJECT }}
+          install_components: kubectl # Install kubectl component
+
+      - name: Install gke-gcloud-auth-plugin # Install the auth plugin
+        run: |
+          CLOUD_SDK_URL="https://packages.cloud.google.com/apt"
+          echo "deb $CLOUD_SDK_URL cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+          sudo apt-get update -y
+          sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
 
       - name: Configure Docker to push to Artifact Registry # Configure docker auth
         run: |
