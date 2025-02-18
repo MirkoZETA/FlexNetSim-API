@@ -1,20 +1,20 @@
 # Flex Net Sim Backend API
 
-Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application deployed at [www.in-progress.com](www.in-progress.com). While unofficial, it serves as a bridge between the simulation engine and the web interface.
+Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application.
 
 ## Prerequisites
 
 *   Python 3.9 or higher
 *   g++ (GNU C++ Compiler)
 *   Docker (for containerization)
-*   Google Cloud SDK (for deployment to GKE) -> In progress.
-*   A Google Cloud Project with Google Kubernetes Engine (GKE) and Google Container Registry (GCR) enabled -> In progress.
+*   Google Cloud SDK (for deployment to Cloud Run)
+*   A Google Cloud Project with Cloud Run API enabled.
 
 ## Getting Started (Local Development)
 
 1.  **Clone the repository:**
     ```bash
-    git clone [repository-url]
+    git clone <repository-url> # Replace <repository-url> with your repository URL
     cd flask-simulation-backend
     ```
 
@@ -36,14 +36,34 @@ Flask-based backend API for integrating the FlexNetSim C++ library, powering the
     ```
     The backend will be accessible at `http://127.0.0.1:5000`.
 
-5.  **Send simulation requests using `curl` or a frontend application:**
-    Example `curl` request with minimal parameters (defaults applied):
-    ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' [http://127.0.0.1:5000/run_simulation](http://127.0.0.1:5000/run_simulation)
-    ```
+## API Endpoints
 
-    Example `curl` request with all parameters specified
-    ```bash
+### `/run_simulation` (POST)
+
+This endpoint runs a FlexNetSim simulation based on the parameters provided in the JSON request body.
+
+**Request Body Parameters:**
+
+| Parameter         | Type             | Description                                                                    | Allowed Values                  | Default Value | Constraints           |
+| :---------------- | :--------------- | :----------------------------------------------------------------------------- | :---------------------------- | :------------ | :-------------------- |
+| `algorithm`       | `string`         | Routing and spectrum assignment algorithm to use.                             | `FirstFit`, `ExactFit`        | `FirstFit`    |                       |
+| `networkType`     | `integer`        | Type of optical network.                                                      | `1`                             | `1`           | Only `1` (EON) available |
+| `goal_connections`| `integer`        | Target number of connection requests for the simulation.                      |                                 | `100000`      | Must be integer > 0   |
+| `confidence`      | `number (float)` | Confidence level for the simulation results.                                  |                                 | `0.05`        | Must be > 0           |
+| `lambda_param`    | `number (float)` | Arrival rate (lambda) of connection requests.                                  |                                 | `1.0`         | Must be > 0           |
+| `mu`              | `number (float)` | Service rate (mu) of connection requests.                                    |                                 | `10.0`        | Must be > 0           |
+| `network`         | `string`         | Network topology to simulate.                                                 | `NSFNet`, `Cost239`, `EuroCore`, `GermanNet`, `UKNet` | `NSFNet`    |                       |
+| `bitrate`         | `string`         | Type of bitrate allocation.                                                  | `fixed-rate`, `flex-rate`     | `bitrate`     |                       |
+| `K`               | `integer`        | Number of paths to compute.                                                    |                                 | `3`           |                       |
+
+**Example `curl` request with minimal parameters (defaults applied):**
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' http://127.0.0.1:5000/run_simulation
+```
+
+**Example `curl`request with all parameters specified:**
+```bash
     curl -X POST -H "Content-Type: application/json" \
      -d '{
           "algorithm": "FirstFit",
@@ -56,7 +76,27 @@ Flask-based backend API for integrating the FlexNetSim C++ library, powering the
           "bitrate": "bitrate" -> (filename in the ./bitrates folder)
          }' \
      http://127.0.0.1:5000/run_simulation
+ ```
+
+ **Response**:
+ - 200 OK: Simulation executed successfully. The response body will be a JSON object with the following structure: 
+    ```JSON
+    {
+    "output": "string",  // Simulation output results
+    "error": "string"   // Empty string if no errors
+    }
     ```
+- 400 Bad Request: Indicates an error in the request, such as missing or invalid parameters. The response body will be a JSON object with an `"error"` field describing the issue.
+- 500 Internal Server Error: Indicates a server-side error, either during compilation or simulation execution. The response body will be a JSON object with `"error"` and "details" fields providing more information about the error.
+
+### `/help` (GET)
+
+This endpoint provides detailed information about the `/run_simulation` endpoint, including the expected request structure, parameters, allowed values, and response formats.
+
+**Request**:
+```bash
+curl http://127.0.0.1:5000/help
+```
 
 ## Dockerization
 
@@ -74,77 +114,54 @@ To stop:
 docker stop fns-api
 ```
 
-## Docs: GCloud Deployment Configuration
+## GCloud Deployment Configuration
 
-For detailed step-by-step instructions on configuring Google Cloud (GCloud) aspects such as Kubernetes Cluster creation, Artifact Registry, Service Account creation, and IAM policy binding, please refer to the following video tutorial:
+As a prerequisite is mandatory to apply the following steps to the GCloud project for the docker image build and upload to artifacts, and also service account creation and IAM policy binding:
 
 [GCloud Configuration Video Tutorial](https://www.youtube.com/watch?v=KQUKDiBz3IA)
 
-This video will guide you through the necessary configurations in the Google Cloud Console to prepare your project for Kubernetes deployments using GitHub Actions.
+This video will guide you through the necessary configurations in the Google Cloud Console to prepare your project for Cloud Run deployments using GitHub Actions.
 
 **Key Reminders from the Video & for Successful Deployment:**
 
-*   **Keep Track of Docker Image Name, Project ID, and Kubernetes Cluster Name:**  Note these down during the video configuration, as you will need them in subsequent steps and for your GitHub Actions workflow.
+*   **Keep Track of Docker Image Name, Project ID:**  Note these down during the video configuration, as you will need them in subsequent steps and for your GitHub Actions workflow.
 *   **Service Account Email:** Ensure you create a Service Account as shown in the video and securely download and store the JSON key file. You'll also need to note the Service Account's email address.
 
-**Post-Configuration Steps (using `gcloud` and `kubectl`):**
+**Post-Configuration Steps (using `gcloud` and `cloud-run`):**
 
-1.  **Create a Kubernetes Cluster in GCloud:**
+1.  Activate necessary apis:
 
-    *   Navigate to the Kubernetes Engine section in your Google Cloud Console.
-    *   Click **Create Cluster**.
-    *   Choose a cluster name (e.g., `flex-net-sim-cluster`). **Remember this name.**
-    *   Select a region for your cluster (e.g., `us-central1`).
-    *   For the purpose of this guide, you can use the default settings for node pools, networking, and other configurations, or adjust them based on your specific needs.
-    *   Click **Create** to create the cluster. It will take a few minutes for the cluster to be provisioned.
+    *   `gcloud services enable run.googleapis.com`
 
-2.  **Set IAM Policy Binding (using `gcloud`):**
+2. Create cloud run service:
+    *   Navigate to the Cloud Run section in your Google Cloud Console.
+    *   Create a **Service**.
+    *   Select *Use an inline editor to create a function*.
+    *   Set a name, in this case *fns-api-cloud-run* will be used.
+    *   Note down the  Endpoint URL, because it will the defaul url for the API.
+    *   Select the authetification preferences.
+    *   Create.
 
-    Replace `<YOUR-GOOGLE-PROJECT-ID>` and `<SERVICE_ACCOUNT_EMAIL>` with your actual Google Cloud Project ID and the Service Account Email you noted down.
-
-    ```bash
-    gcloud projects add-iam-policy-binding <YOUR-GOOGLE-PROJECT-ID> --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/container.admin"
-    ```
-
-3.  **Get Kubernetes Cluster Credentials (using `gcloud`):**
-
-    Replace `<CLUSTER-NAME>` and `<YOUR-GOOGLE-PROJECT-ID>` with your Kubernetes Cluster Name and Google Cloud Project ID. Ensure the region is set to `us-central1`.
+3. Update access of service accounts to cloud run resources:
 
     ```bash
-    gcloud container clusters get-credentials <CLUSTER-NAME> --region us-central1 --project <YOUR-GOOGLE-PROJECT-ID>
+    gcloud projects add-iam-policy-binding "<YOUR-GOOGLE-PROJECT-ID>" --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/run.admin"
     ```
 
-    The command will fetch the cluster credentials and configure `kubectl` to use them. You should see output similar to:
-
-    ```
-    Fetching cluster endpoint and auth data.
-    kubeconfig entry generated for <CLUSTER-NAME>.
-    ```
-
-4.  **Verify `kubectl` Configuration and Service Deployment (using `kubectl`):**
-
-    After the command is successful, verify your `kubectl` configuration and check for the `fns-api-service`:
+    and
 
     ```bash
-    kubectl get service fns-api-service
-    ```
+    gcloud iam service-accounts add-iam-policy-binding "<YOUR_PROJECT_NUMBER>-compute@developer.gserviceaccount.com" --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/iam.serviceAccountActor"
+    ``` 
 
-    If the service is correctly deployed (after your GitHub Actions workflow runs), it should display information about your service, including the `EXTERNAL-IP`.
+4.  **Test the Deployed API (using `curl`):**
 
-    You should see output similar to this (the `EXTERNAL-IP` will likely be different):
-
-    ```
-    NAME              TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-    fns-api-service   LoadBalancer   10.3.xxx.xxx    34.56.1.247     80:8080/TCP    20h
-    kubernetes        ClusterIP      10.3.xxx.xxx     <none>          443/TCP        21h
-    ```
-
-5.  **Test the Deployed API (using `curl`):**
-
-    Use the `curl` command with the `EXTERNAL-IP` you obtained from the previous step to test your deployed API. Replace `<YOUR-EXTERNAL-IP>` with the actual `EXTERNAL-IP`.
+    Use the `curl` command with the `ENDPOINT-URL` you obtained from the previous steps to test your deployed API. Replace `YOUR-ENDPOINT-URL` with the actual `ENDPOINT-URL`.
 
     ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' http://<YOUR-EXTERNAL-IP>/run_simulation
-    ```
+    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' <YOUR-ENDPOINT-URL>/run_simulation
+    ``` 
 
-**Remember**: These GCloud configurations, along with the repository's `gke-cd.yml` GitHub Actions workflow and correctly configured GitHub secrets, are essential for successful automated deployment of your FlexNetSim-API application to Google Cloud Kubernetes Engine.
+    Remember that depending on the authetification preferences you might need to authetificate to send request to the Endpoint just created.
+
+**Remember**: These GCloud configurations, along with the repository's `gke-cd.yml` GitHub Actions workflow and correctly configured GitHub secrets, are essential for successful automated deployment of your FlexNetSim-API application to Google Cloud Run.
