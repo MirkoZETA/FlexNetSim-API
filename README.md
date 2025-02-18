@@ -84,15 +84,25 @@ This video will guide you through the necessary configurations in the Google Clo
 
 **Key Reminders from the Video & for Successful Deployment:**
 
-*   **Keep Track of Docker Image Name, Project ID, and Kubernetes Cluster Name:**  Note these down during the video configuration, as you will need them in subsequent steps and for your GitHub Actions workflow.
+*   **Keep Track of Docker Image Name, Project ID:**  Note these down during the video configuration, as you will need them in subsequent steps and for your GitHub Actions workflow.
 *   **Service Account Email:** Ensure you create a Service Account as shown in the video and securely download and store the JSON key file. You'll also need to note the Service Account's email address.
 
-**Post-Configuration Steps (using `gcloud` and `kubectl`):**
+**Post-Configuration Steps (using `gcloud` and `cloud-run`):**
 
-1.  **Create a Kubernetes Cluster in GCloud:**
+1.  Activate necesary apis:
 
-    *   Navigate to the Kubernetes Engine section in your Google Cloud Console.
-    *   Click **Create Cluster**.
+    *   `gcloud services enable run.googleapis.com`
+
+2. Create cloud run service:
+    *   Navigate to the Cloud Run section in your Google Cloud Console.
+    *   Create a **Service**.
+    *   Select *Use an inline editor to create a function*.
+    *   Set a name, in this case *fns-api-cloud-run* will be used.
+    *   Note down the  Endpoint URL, because it will the defaul url for the API.
+    *   Select the authetification preferences.
+    *   Create.
+
+
     *   Choose a cluster name (e.g., `flex-net-sim-cluster`). **Remember this name.**
     *   Select a region for your cluster (e.g., `us-central1`).
     *   For the purpose of this guide, you can use the default settings for node pools, networking, and other configurations, or adjust them based on your specific needs.
@@ -148,3 +158,5 @@ This video will guide you through the necessary configurations in the Google Clo
     ```
 
 **Remember**: These GCloud configurations, along with the repository's `gke-cd.yml` GitHub Actions workflow and correctly configured GitHub secrets, are essential for successful automated deployment of your FlexNetSim-API application to Google Cloud Kubernetes Engine.
+
+
