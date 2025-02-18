@@ -74,13 +74,13 @@ To stop:
 docker stop fns-api
 ```
 
-## Docs: GCloud Deployment Configuration
+## GCloud Deployment Configuration
 
-For detailed step-by-step instructions on configuring Google Cloud (GCloud) aspects such as Kubernetes Cluster creation, Artifact Registry, Service Account creation, and IAM policy binding, please refer to the following video tutorial:
+As a prerequisite is mandatory to apply the following steps to the GCloud project for the docker image build and upload to artifacts, and also service account creation and IAM policy binding:
 
 [GCloud Configuration Video Tutorial](https://www.youtube.com/watch?v=KQUKDiBz3IA)
 
-This video will guide you through the necessary configurations in the Google Cloud Console to prepare your project for Kubernetes deployments using GitHub Actions.
+This video will guide you through the necessary configurations in the Google Cloud Console to prepare your project for Cloud Run deployments using GitHub Actions.
 
 **Key Reminders from the Video & for Successful Deployment:**
 
@@ -89,7 +89,7 @@ This video will guide you through the necessary configurations in the Google Clo
 
 **Post-Configuration Steps (using `gcloud` and `cloud-run`):**
 
-1.  Activate necesary apis:
+1.  Activate necessary apis:
 
     *   `gcloud services enable run.googleapis.com`
 
@@ -102,61 +102,26 @@ This video will guide you through the necessary configurations in the Google Clo
     *   Select the authetification preferences.
     *   Create.
 
-
-    *   Choose a cluster name (e.g., `flex-net-sim-cluster`). **Remember this name.**
-    *   Select a region for your cluster (e.g., `us-central1`).
-    *   For the purpose of this guide, you can use the default settings for node pools, networking, and other configurations, or adjust them based on your specific needs.
-    *   Click **Create** to create the cluster. It will take a few minutes for the cluster to be provisioned.
-
-2.  **Set IAM Policy Binding (using `gcloud`):**
-
-    Replace `<YOUR-GOOGLE-PROJECT-ID>` and `<SERVICE_ACCOUNT_EMAIL>` with your actual Google Cloud Project ID and the Service Account Email you noted down.
+3. Update access of service accounts to cloud run resources:
 
     ```bash
-    gcloud projects add-iam-policy-binding <YOUR-GOOGLE-PROJECT-ID> --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/container.admin"
+    gcloud projects add-iam-policy-binding "<YOUR-GOOGLE-PROJECT-ID>" --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/run.admin"
     ```
 
-3.  **Get Kubernetes Cluster Credentials (using `gcloud`):**
-
-    Replace `<CLUSTER-NAME>` and `<YOUR-GOOGLE-PROJECT-ID>` with your Kubernetes Cluster Name and Google Cloud Project ID. Ensure the region is set to `us-central1`.
+    and
 
     ```bash
-    gcloud container clusters get-credentials <CLUSTER-NAME> --region us-central1 --project <YOUR-GOOGLE-PROJECT-ID>
-    ```
+    gcloud iam service-accounts add-iam-policy-binding "<YOUR_PROJECT_NUMBER>-compute@developer.gserviceaccount.com" --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/iam.serviceAccountActor"
+    ``` 
 
-    The command will fetch the cluster credentials and configure `kubectl` to use them. You should see output similar to:
+4.  **Test the Deployed API (using `curl`):**
 
-    ```
-    Fetching cluster endpoint and auth data.
-    kubeconfig entry generated for <CLUSTER-NAME>.
-    ```
-
-4.  **Verify `kubectl` Configuration and Service Deployment (using `kubectl`):**
-
-    After the command is successful, verify your `kubectl` configuration and check for the `fns-api-service`:
+    Use the `curl` command with the `ENDPOINT-URL` you obtained from the previous steps to test your deployed API. Replace `YOUR-ENDPOINT-URL` with the actual `ENDPOINT-URL`.
 
     ```bash
-    kubectl get service fns-api-service
-    ```
+    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' <YOUR-ENDPOINT-URL>/run_simulation
+    ``` 
 
-    If the service is correctly deployed (after your GitHub Actions workflow runs), it should display information about your service, including the `EXTERNAL-IP`.
+    Remember that depending on the authetification preferences you might need to authetificate to send request to the Endpoint just created.
 
-    You should see output similar to this (the `EXTERNAL-IP` will likely be different):
-
-    ```
-    NAME              TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-    fns-api-service   LoadBalancer   10.3.xxx.xxx    34.56.1.247     80:8080/TCP    20h
-    kubernetes        ClusterIP      10.3.xxx.xxx     <none>          443/TCP        21h
-    ```
-
-5.  **Test the Deployed API (using `curl`):**
-
-    Use the `curl` command with the `EXTERNAL-IP` you obtained from the previous step to test your deployed API. Replace `<YOUR-EXTERNAL-IP>` with the actual `EXTERNAL-IP`.
-
-    ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' http://<YOUR-EXTERNAL-IP>/run_simulation
-    ```
-
-**Remember**: These GCloud configurations, along with the repository's `gke-cd.yml` GitHub Actions workflow and correctly configured GitHub secrets, are essential for successful automated deployment of your FlexNetSim-API application to Google Cloud Kubernetes Engine.
-
-
+**Remember**: These GCloud configurations, along with the repository's `gke-cd.yml` GitHub Actions workflow and correctly configured GitHub secrets, are essential for successful automated deployment of your FlexNetSim-API application to Google Cloud Run.
