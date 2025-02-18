@@ -62,7 +62,8 @@ def run_simulation():
         lambda_param = data.get("lambda", 1)
         mu = data.get("mu", 10)
         network = data.get("network", "NSFNet")
-        bitrate = data.get("bitrate", "bitrate")
+        bitrate = data.get("bitrate", "fixed-rate")
+        K = data.get("K", 3)
 
         # Construct command for subprocess
         command = [
@@ -74,7 +75,8 @@ def run_simulation():
             str(lambda_param),
             str(mu),
             str(network),
-            str(bitrate)
+            str(bitrate),
+            str(K)
         ]
         logger.debug(f"Running simulation with command: {' '.join(command)}") # Debug log for command
 
@@ -91,6 +93,116 @@ def run_simulation():
     except Exception as e:
         logger.exception("Unexpected error during run_simulation:")
         return jsonify({"error": "An unexpected error occurred. Contact developer.", "details": str(e)}), 500
+
+@app.route("/help", methods=["GET"])
+def simulation_help():
+    """Returns information about the /run_simulation endpoint, including request structure and parameter details."""
+    schema = {
+        "endpoint": "/run_simulation",
+        "method": "POST",
+        "request_body_format": "application/json",
+        "description": "Runs a network simulation with provided parameters.",
+        "request_parameters": [
+            {
+                "name": "algorithm",
+                "type": "string",
+                "description": "Routing and spectrum assignment algorithm to use.",
+                "allowed_values": ["FirstFit", "ExactFit"],
+                "default": "FirstFit",
+                "required": False
+            },
+            {
+                "name": "networkType",
+                "type": "integer",
+                "description": "Type of optical network.",
+                "allowed_values": [1],
+                "value_meanings": {"1": "EON (Elastic Optical Network)"},
+                "note": "Only EON (networkType: 1) is currently available in this playground. SDM (2) and BDM (3) are not yet implemented.",
+                "default": 1,
+                "required": False
+            },
+            {
+                "name": "goal_connections",
+                "type": "integer",
+                "description": "Target number of connection requests for the simulation.",
+                "constraints": "Must be an integer greater than 0.",
+                "default": 100000,
+                "required": False
+            },
+            {
+                "name": "confidence",
+                "type": "number (float)",
+                "description": "Confidence level for the simulation results.",
+                "constraints": "Must be a number greater than 0.",
+                "default": 0.05,
+                "required": False
+            },
+            {
+                "name": "lambda_param",
+                "type": "number (float)",
+                "description": "Arrival rate (lambda) of connection requests.",
+                "constraints": "Must be a number greater than 0.",
+                "default": 1.0,
+                "required": False
+            },
+            {
+                "name": "mu",
+                "type": "number (float)",
+                "description": "Service rate (mu) of connection requests.",
+                "constraints": "Must be a number greater than 0.",
+                "default": 10.0,
+                "required": False
+            },
+            {
+                "name": "network",
+                "type": "string",
+                "description": "Network topology to simulate.",
+                "allowed_values": ["NSFNet", "Cost239", "EuroCore", "GermanNet", "UKNet"],
+                "default": "NSFNet",
+                "required": False
+            },
+            {
+                "name": "bitrate",
+                "type": "string",
+                "description": "Type of bitrate allocation.",
+                "allowed_values": ["fixed-rate", "flex-rate"],
+                "default": "fixed-rate",
+                "required": False
+            },
+             {
+                "name": "K",
+                "type": "integer",
+                "description": "Number of paths to considers.",
+                "default": 3,
+                "required": False
+            },
+        ],
+        "response_body_format": "application/json",
+        "response_structure": {
+            "output": "string",
+            "error": "string (empty if no error)"
+        },
+        "example_request": {
+            "algorithm": "FirstFit",
+            "networkType": 1,
+            "goal_connections": 10000,
+            "confidence": 0.05,
+            "lambda_param": 120,
+            "mu": 1,
+            "network": "NSFNet",
+            "bitrate": "flex-rate",
+            "K": 3
+        },
+        "example_response_success": {
+            "output": "Simulation output will be a string containing simulation results.",
+            "error": ""
+        },
+        "example_response_error": {
+            "error": "Simulation execution failed",
+            "details": "Detailed error message from the simulation or backend."
+        }
+    }
+    return jsonify(schema), 200
 
 # --- Run Setup on Application Start ---
 with app.app_context(): # Context needed to call route function outside request

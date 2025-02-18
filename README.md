@@ -1,20 +1,20 @@
 # Flex Net Sim Backend API
 
-Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application deployed at [www.in-progress.com](www.in-progress.com). While unofficial, it serves as a bridge between the simulation engine and the web interface.
+Flask-based backend API for integrating the FlexNetSim C++ library, powering the web application.
 
 ## Prerequisites
 
 *   Python 3.9 or higher
 *   g++ (GNU C++ Compiler)
 *   Docker (for containerization)
-*   Google Cloud SDK (for deployment to GKE) -> In progress.
-*   A Google Cloud Project with Google Kubernetes Engine (GKE) and Google Container Registry (GCR) enabled -> In progress.
+*   Google Cloud SDK (for deployment to Cloud Run)
+*   A Google Cloud Project with Cloud Run API enabled.
 
 ## Getting Started (Local Development)
 
 1.  **Clone the repository:**
     ```bash
-    git clone [repository-url]
+    git clone <repository-url> # Replace <repository-url> with your repository URL
     cd flask-simulation-backend
     ```
 
@@ -36,14 +36,34 @@ Flask-based backend API for integrating the FlexNetSim C++ library, powering the
     ```
     The backend will be accessible at `http://127.0.0.1:5000`.
 
-5.  **Send simulation requests using `curl` or a frontend application:**
-    Example `curl` request with minimal parameters (defaults applied):
-    ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' [http://127.0.0.1:5000/run_simulation](http://127.0.0.1:5000/run_simulation)
-    ```
+## API Endpoints
 
-    Example `curl` request with all parameters specified
-    ```bash
+### `/run_simulation` (POST)
+
+This endpoint runs a FlexNetSim simulation based on the parameters provided in the JSON request body.
+
+**Request Body Parameters:**
+
+| Parameter         | Type             | Description                                                                    | Allowed Values                  | Default Value | Constraints           |
+| :---------------- | :--------------- | :----------------------------------------------------------------------------- | :---------------------------- | :------------ | :-------------------- |
+| `algorithm`       | `string`         | Routing and spectrum assignment algorithm to use.                             | `FirstFit`, `ExactFit`        | `FirstFit`    |                       |
+| `networkType`     | `integer`        | Type of optical network.                                                      | `1`                             | `1`           | Only `1` (EON) available |
+| `goal_connections`| `integer`        | Target number of connection requests for the simulation.                      |                                 | `100000`      | Must be integer > 0   |
+| `confidence`      | `number (float)` | Confidence level for the simulation results.                                  |                                 | `0.05`        | Must be > 0           |
+| `lambda_param`    | `number (float)` | Arrival rate (lambda) of connection requests.                                  |                                 | `1.0`         | Must be > 0           |
+| `mu`              | `number (float)` | Service rate (mu) of connection requests.                                    |                                 | `10.0`        | Must be > 0           |
+| `network`         | `string`         | Network topology to simulate.                                                 | `NSFNet`, `Cost239`, `EuroCore`, `GermanNet`, `UKNet` | `NSFNet`    |                       |
+| `bitrate`         | `string`         | Type of bitrate allocation.                                                  | `fixed-rate`, `flex-rate`     | `bitrate`     |                       |
+| `K`               | `integer`        | Number of paths to compute.                                                    |                                 | `3`           |                       |
+
+**Example `curl` request with minimal parameters (defaults applied):**
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "bitrate"}' http://127.0.0.1:5000/run_simulation
+```
+
+**Example `curl`request with all parameters specified:**
+```bash
     curl -X POST -H "Content-Type: application/json" \
      -d '{
           "algorithm": "FirstFit",
@@ -56,7 +76,27 @@ Flask-based backend API for integrating the FlexNetSim C++ library, powering the
           "bitrate": "bitrate" -> (filename in the ./bitrates folder)
          }' \
      http://127.0.0.1:5000/run_simulation
+ ```
+
+ **Response**:
+ - 200 OK: Simulation executed successfully. The response body will be a JSON object with the following structure: 
+    ```JSON
+    {
+    "output": "string",  // Simulation output results
+    "error": "string"   // Empty string if no errors
+    }
     ```
+- 400 Bad Request: Indicates an error in the request, such as missing or invalid parameters. The response body will be a JSON object with an `"error"` field describing the issue.
+- 500 Internal Server Error: Indicates a server-side error, either during compilation or simulation execution. The response body will be a JSON object with `"error"` and "details" fields providing more information about the error.
+
+### `/help` (GET)
+
+This endpoint provides detailed information about the `/run_simulation` endpoint, including the expected request structure, parameters, allowed values, and response formats.
+
+**Request**:
+```bash
+curl http://127.0.0.1:5000/help
+```
 
 ## Dockerization
 
