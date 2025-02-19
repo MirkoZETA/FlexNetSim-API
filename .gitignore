@@ -1,0 +1,8 @@
+__pycache__
+simulation.out
+
+# Exclude local IDE settings
+.vscode/
+
+# macOS
+**/.DS_Store    
