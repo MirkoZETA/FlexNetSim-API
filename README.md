@@ -14,7 +14,7 @@ Flask-based backend API for integrating the FlexNetSim C++ library, powering the
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/MirkoZETA/FlexNetSim-API.git](https://github.com/MirkoZETA/FlexNetSim-API.git)
+    git clone https://github.com/MirkoZETA/FlexNetSim-API.git
     cd flask-simulation-backend
     ```
 

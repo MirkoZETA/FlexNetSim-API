@@ -1,20 +1,17 @@
-FROM python:3.9-slim-buster
+FROM python:3.12-slim-bookworm
 WORKDIR /app
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential
+RUN pip install --no-cache-dir --upgrade pip setuptools
 
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends build-essential # Update OS packages and keep build-essential
 
 COPY backend.py ./
 COPY src ./src
 COPY networks ./networks
 COPY bitrates ./bitrates
 
+# CMD ["g++ -O3 -o simulation.out ./src/main.cpp"]  # Commented out as per original Dockerfile
 
-# RUN g++ -O3 -o simulation.out ./src/main.cpp
-
-# - 'backend:app' especifica el módulo 'backend.py' y la instancia de Flask 'app'.
-# - '--bind 0.0.0.0:8080' hace que Gunicorn escuche en todas las interfaces (0.0.0.0) en el puerto 8080 dentro del contenedor.
-# - '--workers 3' configura Gunicorn para usar 3 procesos de trabajo para manejar las peticiones.
 CMD ["gunicorn", "backend:app", "--bind", "0.0.0.0:8080", "--workers", "3"]
