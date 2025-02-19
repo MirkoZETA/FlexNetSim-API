@@ -1,0 +1,62 @@
+name: Deploy FNS API to Cloud Run (Separated Jobs)
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-push-image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Google Cloud Auth # Authenticate gcloud CLI
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Set up Google Cloud CLI # Set up gcloud CLI and Docker
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: latest
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
+
+      - name: Configure Docker to push to Artifact Registry # Configure docker auth
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - name: Build and Push Docker image to Artifact Registry # Build and push image
+        env:
+          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
+          IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/flex-net-sim-repo/fns-api
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+
+  deploy-to-cloud-run:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    needs: build-and-push-image # Ensure this job runs after build-and-push-image
+    steps:
+      - name: Checkout code (again, if needed for deploy steps - optional)
+        uses: actions/checkout@v2
+
+      - name: Google Cloud Auth # Authenticate gcloud CLI
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          image: us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/flex-net-sim-repo/fns-api:latest # Use the same image as built
+          service: fns-api-cloud-run
+          region: us-central1
+          project_id: ${{ secrets.GOOGLE_PROJECT }}
