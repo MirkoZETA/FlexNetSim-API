@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Point README docs to oficial documentation.
 - New domain.
 
-## [0.2.0] - 2025-02-19
+## [1.0.0] - 2025-02-19
 
 ### Added
 
@@ -34,11 +34,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API allocated in cloud run.
 - Documentation README for the process of develop/deployment located in [workflows](https://github.com/MirkoZETA/FlexNetSim-API/tree/master/.github/workflows/README_DEV.md).
 
-## [0.1.0] - 2025-02-18
-
-### Added
-
-- It was a mess!
-
-[0.2.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v0.0.2
-[0.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v0.0.1
+[1.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.0.0
