@@ -1,5 +1,7 @@
 #include "simulator.hpp"
 
+unsigned int K;
+
 BEGIN_ALLOC_FUNCTION(FirstFit)
 {
   int numberOfSlots = REQ_SLOTS(0);
@@ -9,6 +11,7 @@ BEGIN_ALLOC_FUNCTION(FirstFit)
   for (int i = 0; i < NUMBER_OF_ROUTES;
        i++)
   {
+    if (i >= K) continue;
     totalSlots = std::vector<bool>(LINK_IN_ROUTE(0, 0)->getSlots(),
                                    false);
     for (int j = 0; j < NUMBER_OF_LINKS(i);
@@ -49,12 +52,57 @@ BEGIN_ALLOC_FUNCTION(FirstFit)
 }
 END_ALLOC_FUNCTION
 
+BEGIN_ALLOC_FUNCTION(ExactFit) {
+  int numberOfSlots = REQ_SLOTS(0);
+  int currentNumberSlots;
+  int currentSlotIndex;
+  int firstIndex;
+  std::vector<bool> totalSlots;
+  for (int i = 0; i < NUMBER_OF_ROUTES; i++) {
+    if (i >= K) continue;
+    totalSlots = std::vector<bool>(LINK_IN_ROUTE(0, 0)->getSlots(), false);
+    firstIndex = -1;
+    for (int j = 0; j < NUMBER_OF_LINKS(i); j++) {
+      for (int k = 0; k < LINK_IN_ROUTE(i, j)->getSlots(); k++) {
+        totalSlots[k] = totalSlots[k] | LINK_IN_ROUTE(i, j)->getSlot(k);
+      }
+    }
+    currentNumberSlots = 0;
+    currentSlotIndex = 0;
+    for (int j = 0; j < totalSlots.size(); j++) {
+      if (totalSlots[j] == false) {
+        currentNumberSlots++;
+      } else {
+        if (currentNumberSlots == numberOfSlots) {
+          for (int j = 0; j < NUMBER_OF_LINKS(i); j++) {
+            ALLOC_SLOTS(LINK_IN_ROUTE_ID(i, j), currentSlotIndex, numberOfSlots)
+          }
+          return ALLOCATED;
+        }
+        currentNumberSlots = 0;
+        currentSlotIndex = j + 1;
+      }
+      if (firstIndex == -1 && currentNumberSlots > numberOfSlots) {
+        firstIndex = currentSlotIndex;
+      }
+    }
+    if (firstIndex != -1) {
+      for (int j = 0; j < NUMBER_OF_LINKS(i); j++) {
+        ALLOC_SLOTS(LINK_IN_ROUTE_ID(i, j), firstIndex, numberOfSlots);
+      }
+      return ALLOCATED;
+    }
+  }
+  return NOT_ALLOCATED;
+}
+END_ALLOC_FUNCTION
+
 int main(int argc, char *argv[])
 {
 
-  if (argc < 9)
+  if (argc < 10)
   {
-    std::cerr << "Uso: " << argv[0] << " <NombreAlgoritmo> <networkType> <goalConnections> <confidence> <lambda> <mu> <networkName> <bitrate>" << std::endl;
+    std::cerr << "Uso: " << argv[0] << " <NombreAlgoritmo> <networkType> <goalConnections> <confidence> <lambda> <mu> <networkName> <bitrate> <K>" << std::endl;
     return 1;
   }
 
@@ -63,6 +111,7 @@ int main(int argc, char *argv[])
   float confidence = std::stof(argv[4]);
   float lambda = std::stof(argv[5]);
   float mu = std::stof(argv[6]);
+  K = std::stoi(argv[9]);
 
   std::string networkName = argv[7];
   std::string bitrate = argv[8];
@@ -82,8 +131,8 @@ int main(int argc, char *argv[])
     USE_ALLOC_FUNCTION(FirstFit, sim);
     break;
 
-  case 'B':
-    USE_ALLOC_FUNCTION(FirstFit, sim);
+  case 'E':
+    USE_ALLOC_FUNCTION(ExactFit, sim);
     break;
 
   default:
