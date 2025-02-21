@@ -8,11 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Unitary tests.
+
+### ROADMAP
 - Switch to Flex Net Sim v0.8.2.
-- Enchanced previous algorithms.
-- New algorithm BestFit.
+- Enchance previous algorithms.
+- Add algorithm BestFit.
 - Point README docs to oficial documentation.
-- New domain.
+- Switch to new domain.
 
 ## [1.0.0] - 2025-02-19
 
