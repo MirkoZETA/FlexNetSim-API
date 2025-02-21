@@ -115,6 +115,9 @@ int main(int argc, char *argv[])
   if (goalConnections > 10000000) {
     std::cerr << "goalConnections must be less than 10,000,000" << std::endl;
     return 1;
+  } else if (goalConnections < 1) {
+    std::cerr << "goalConnections must be greater than 0" << std::endl;
+    return 1;
   }
 
   float confidence = std::stof(argv[4]);
@@ -124,6 +127,9 @@ int main(int argc, char *argv[])
   K = std::stoi(argv[9]);
   if (K > 6) {
     std::cerr << "Max K is 6" << std::endl;
+    return 1;
+  } else if (K < 1) {
+    std::cerr << "Min K is 1" << std::endl;
     return 1;
   }
 
@@ -147,7 +153,8 @@ int main(int argc, char *argv[])
     break;
 
   default:
-    USE_ALLOC_FUNCTION(FirstFit, sim);
+    std::cerr << "Invalid algorithm" << std::endl;
+    return 1;
     break;
   }
 

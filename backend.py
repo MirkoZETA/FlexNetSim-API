@@ -2,8 +2,7 @@
 from flask import Flask, request, jsonify
 import subprocess
 import os
-import logging # Import the logging module
-import json
+import logging
 
 # --- Flask Setup --- 
 app = Flask(__name__)
@@ -29,14 +28,23 @@ def compile_simulation():
     os.remove(SIMULATION_EXECUTABLE)
 
   logger.info("Compiling simulation...")
+
+  # Check if main.cpp exists
+  if not os.path.exists("./src/main.cpp"):
+    COMPILE_ERROR = {"error": "main.cpp not found", "details": "Ensure main.cpp is in the correct directory."}
+    logger.error(f"Compilation failed: {COMPILE_ERROR['error']} - Details: {COMPILE_ERROR['details']}")
+    return False
   compile_result = subprocess.run(["g++", "-O3", "-o", SIMULATION_EXECUTABLE, "./src/main.cpp"], capture_output=True, text=True)
 
+  # Check if compilation was successful
   if compile_result.returncode != 0:
     COMPILE_ERROR = {"error": "Compilation failed", "details": compile_result.stderr}
     logger.error(f"Compilation failed: {COMPILE_ERROR['error']} - Details: {COMPILE_ERROR['details']}") # Use logger.error for errors
     return False
   
+  COMPILE_ERROR = None
   logger.info("Simulation compiled successfully.")
+  
   return True
 
 # --- Run Simulation Endpoint ---
@@ -48,12 +56,10 @@ def run_simulation():
     return jsonify(COMPILE_ERROR), 500
 
   if not os.path.exists(SIMULATION_EXECUTABLE):
-    return jsonify({"error": "Simulation executable not found. Contact developer."}), 400
+    return jsonify({"error": "Simulation executable not found. Contact developer."}), 500
 
   try:
     data = request.get_json()
-    # if not data:
-    #  return jsonify({"error": "Missing JSON parameters in request body."}), 400
 
     # Parameters, use default values if not provided
     algorithm = data.get("algorithm", "FirstFit")
