@@ -7,12 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### ROADMAP
 - Switch to Flex Net Sim v0.8.2.
-- Enchanced previous algorithms.
-- New algorithm BestFit.
-- Point README docs to oficial documentation.
-- New domain.
+- Enhance previous algorithms.
+- Add algorithm BestFit.
+- Switch to new domain.
+
+## [1.1.0] - 2025-03-01
+
+### Added
+- Comprehensive unit tests for all API endpoints and functions
+- Test coverage reporting with pytest-cov
+- GitHub Pages integration for coverage reports
+- Coverage badges in README.md
+- New GitHub Actions workflow for test coverage
+
+### Changed
+- Improved documentation in README.md with clearer structure and badges
+- Enhanced API documentation in backend.py with better comments and docstrings
+- Updated development guide with clearer instructions
+- Refactored GitHub Actions workflows to separate testing and deployment
+- Improved code comments and function documentation
+
+### Fixed
+- Modified .gitignore to handle coverage files
 
 ## [1.0.0] - 2025-02-19
 
@@ -34,4 +52,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API allocated in cloud run.
 - Documentation README for the process of develop/deployment located in [workflows](https://github.com/MirkoZETA/FlexNetSim-API/tree/master/.github/workflows/README_DEV.md).
 
+[1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
 [1.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.0.0

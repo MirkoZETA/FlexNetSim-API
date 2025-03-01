@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     std::cerr << "goalConnections must be less than 10,000,000" << std::endl;
     return 1;
   } else if (goalConnections < 1) {
-    std::cerr << "goalConnections must be greater than 0" << std::endl;
+    std::cerr << "goalConnections must be greater than 0" << std::endl // Induced error
     return 1;
   }
 
