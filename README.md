@@ -1,79 +1,83 @@
 # Flex Net Sim Backend API
 
-Welcome to the Flex Net Sim Backend API repository.
+A lightweight API for running optical network simulations with [Flex Net Sim C++](https://gitlab.com/DaniloBorquez/flex-net-sim).
 
-This is the **publicly accessible backend API** for the [Flex Net Sim](https://gitlab.com/DaniloBorquez/flex-net-sim) project.
+## Overview
 
-This API provides a **hands-on demonstration**, enabling users to quickly execute pre-configured network simulations and gain an initial understanding of Flex Net Sim's capabilities.
+The FlexNetSim Backend API provides:
 
-Through simple POST requests, initiated via command-line tools or the [playground page](www.in-progress.com), users can experiment with a defined set of parameters and algorithms. This allows for exploration of fundamental network simulation concepts using Flex Net Sim.
+- **Hands-on demonstration** of optical network simulation capabilities
+- **Simplified access** to core Flex Net Sim features
+- **Quick experimentation** with pre-configured network topologies and parameters
 
-It is important to note that **this API is intentionally designed as a limited demonstration platform**.  It serves as a **simplified method of accessing** and showcasing the **basic functionalities** of Flex Net Sim.  **It is not intended for complex simulations or for algorithm customization.**  Algorithm customization is a core strength of Flex Net Sim, and this advanced capability is exclusively unlocked when working directly with **the library**.
+This API serves as an introduction to the full Flex Net Sim library, allowing users to explore basic network simulation concepts through simple HTTP requests.
 
-The purpose of this API is to introduce users to Flex Net Sim and encourage exploration of **the full library** for advanced simulation tasks.  **The full library** offers significantly greater power, flexibility, and customization potential.
+## Important Limitations
 
-For users interested in progressing beyond this introductory API, comprehensive resources and documentation are available at the official [Flex Net Sim documentation](https://flex-net-sim-fork.readthedocs.io/stable/).
+This API is intentionally designed as a limited demonstration platform:
 
-For **Development and Deployment Instructions** of this API (the playground itself), please refer to [README_DEV.md](README_DEV.md).
+- **Not intended** for complex simulations or algorithm customization
+- Provides access to **basic functionalities** only
+- For advanced simulation tasks, users should explore **the full library**
+
+For comprehensive resources, see the [Flex Net Sim documentation](https://flex-net-sim-fork.readthedocs.io/stable/).
+
+For development and deployment instructions for this API, refer to [README_DEV.md](.github/workflows/README_DEV.md).
 
 ## API Endpoints
 
 ### `/run_simulation` (POST)
 
-This endpoint runs a Flex Net Sim simulation based on the parameters provided in the JSON request body.
+Runs a network simulation with the provided parameters.
 
-**Request Body Parameters:**
+#### Request Parameters
 
-| Parameter         | Type             | Description                                            | Allowed Values                  | Default Value | Constraints           |
-| :---------------- | :-------------- | :-----------------------------------------------------  | :---------------------------- | :------------ | :-------------------- |
-| `algorithm`       | `string`        | Routing and spectrum assignment algorithm to use.       | `FirstFit`, `ExactFit`        | `FirstFit`    |                       |
-| `networkType`    | `integer`        | Type of optical network.                                | `1`                           | `1`           | Only `1` (EON) available |
-| `goalConnections`| `integer`        | Target number of connection requests for the simulation.|                               | `100000`      | Must be integer > 0   |
-| `confidence`      | `number (float)`| Confidence level for the simulation results.            |                               | `0.05`        | Must be > 0           |
-| `lambdaParam`    | `number (float)` | Arrival rate (lambda) of connection requests.           |                               | `1.0`         | Must be > 0           |
-| `mu`              | `number (float)`| Service rate (mu) of connection requests.              |                               | `10.0`        | Must be > 0           |
-| `network`         | `string`        | Network topology to simulate.                          | `NSFNet`, `Cost239`, `EuroCore`, `GermanNet`, `UKNet` | `NSFNet`    |                       |
-| `bitrate`         | `string`        | Type of bitrate allocation.                            | `fixed-rate`, `flex-rate`     | `bitrate`     |                       |
-| `K`               | `integer`       | Number of paths to consider.                           |                               | `3`           |                       |
+| Parameter       | Type      | Description                | Allowed Values & Constraints                                   | Default   |
+|---------------|---------|----------------------------|-------------------------------------------------|-----------|
+| `algorithm`    | `string`  | RSA algorithm              | `FirstFit`, `ExactFit`                         | `FirstFit` |
+| `networkType`  | `integer` | Network type               | Only `1` (EON) supported                        | `1`       |
+| `goalConnections` | `integer` | Target connection requests | Must be > 0 and < 10,000,000                   | `100000`  |
+| `confidence`   | `float`   | Confidence level           | Must be > 0 and < 1.0                           | `0.05`    |
+| `lambdaParam`  | `float`   | Arrival rate               | Must be > 0                                     | `1.0`     |
+| `mu`          | `float`   | Service rate               | Must be > 0                                     | `10.0`    |
+| `network`      | `string`  | Network topology           | `NSFNet`, `Cost239`, `EuroCore`, `GermanNet`, `UKNet` | `NSFNet` |
+| `bitrate`      | `string`  | Bitrate type               | `fixed-rate`, `flex-rate`                      | `fixed-rate` |
+| `K`           | `integer` | Path count                 | Must be > 0 and ≤ 6                             | `3`       |
 
-**Example `curl` request with no parameters (defaults applied):**
+#### Example: Default Parameters
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{}' https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation
+curl -X POST -H "Content-Type: application/json" -d '{}' \
+  https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation
 ```
 
-**Example `curl`request with all parameters specified:**
+#### Example: Custom Parameters
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
--d '{ "algorithm": "FirstFit",
-      "networkType": 1,
-      "goalConnections": 1000000,
-      "confidence": 0.05,
-      "lambdaParam": 120,
-      "mu": 1,
-      "network": "NSFNet",
-      "bitrate": "fixed-rate"
-    }' \
-  https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation
-``` 
+-d '{ 
+  "algorithm": "FirstFit",
+  "networkType": 1,
+  "goalConnections": 100000,
+  "confidence": 0.05,
+  "lambdaParam": 120,
+  "mu": 1,
+  "network": "NSFNet",
+  "bitrate": "fixed-rate"
+}' \
+https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation
+```
 
- **Response**:
-  - `200` OK: Simulation executed successfully. The response body will be a JSON object with the following structure: 
-    ```JSON
-    {
-    "output": "string",
-    "error": "string"
-    }
-    ```
-  - `400` Bad Request: Indicates an error in the request, such as missing or invalid parameters. The response body will be a JSON object with an `error` field describing the issue.
-  - `500` Internal Server Error: Indicates a server-side error, either during compilation or simulation execution. The response body will be a JSON object with `error` and "details" fields providing more information about the error.
+#### Response Codes
+
+- `200 OK`: Success. Returns `{"output": "...", "error": ""}`
+- `400 Bad Request`: Invalid parameters
+- `500 Internal Server Error`: Server-side error
 
 ### `/help` (GET)
 
-This endpoint provides detailed information about the `/run_simulation` endpoint, including the expected request structure, parameters, and response formats.
+Returns detailed API documentation.
 
-**Request**:
 ```bash
 curl https://fns-api-cloud-run-787143541358.us-central1.run.app/help
 ```
