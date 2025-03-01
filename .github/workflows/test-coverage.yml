@@ -77,11 +77,16 @@ jobs:
       
       - name: Setup Pages
         uses: actions/configure-pages@v3
-        
+
+      - name: Move coverage to subdirectory
+        run: |
+          mkdir -p public/coverage
+          mv htmlcov/* public/coverage/
+
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: './htmlcov'
+          path: './public'
           
       - name: Deploy to GitHub Pages
         id: deployment
