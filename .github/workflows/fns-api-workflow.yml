@@ -55,7 +55,9 @@ jobs:
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages
           path: './public'
+        
 
   # Job 2: Deploy GitHub Pages
   deploy-pages:
@@ -69,10 +71,15 @@ jobs:
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v3
+      
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
           
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
   # Job 3: Build and push Docker image (master only)
   build-and-push-image:
