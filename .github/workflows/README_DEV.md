@@ -1,79 +1,93 @@
-# Flex Net Sim Backend API - Development and Deployment Instructions
+# Flex Net Sim API - Development Guide
 
-This document is for developers who want to set up, develop, and deploy the Flex Net Sim Backend API.
+This guide helps developers set up, test, and deploy the Flex Net Sim Backend API.
 
 ## Prerequisites
 
-*   Python 3.9 or higher
-*   g++ (GNU C++ Compiler)
-*   Docker (for containerization)
-*   Google Cloud SDK (for deployment to Google Cloud Run)
-*   A Google Cloud Project with Cloud Run API enabled.
+* Python 3.9+
+* g++ (GNU C++ Compiler)
+* Docker (for containerization)
+* A Google Cloud Project with Cloud Run API enabled
 
-## Getting Started (Local Development)
+## Local Development Setup
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/MirkoZETA/FlexNetSim-API.git](https://github.com/MirkoZETA/FlexNetSim-API.git)
-    cd flask-simulation-backend
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/MirkoZETA/FlexNetSim-API.git
+   cd FlexNetSim-API
+   ```
 
-2.  **Create a Python virtual environment (recommended):**
-    ```bash
-    python3 -m venv .venv
-    ```
+2. **Set up Python environment:**
+   ```bash
+   # Create virtual environment
+   python3 -m venv .venv
+   
+   # Activate (Linux/macOS)
+   source .venv/bin/activate
+   
+   # Activate (Windows)
+   .venv\Scripts\activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
 
-    On Linux/macOS:
-    ```bash
-    source .venv/bin/activate
-    ```
+3. **Run the application:**
+   ```bash
+   flask --app backend run
+   ```
+   The API will be available at `http://127.0.0.1:5000`.
 
-    On Windows
-    ```bash
-    .venv\Scripts\activate  
-    ```
-3.  **Install Python dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+4. **Test the API:**
+   ```bash
+   # Test help endpoint
+   curl http://127.0.0.1:5000/help
+   
+   # Test simulation endpoint
+   curl -X POST -H "Content-Type: application/json" -d '{}' http://127.0.0.1:5000/run_simulation
+   ```
 
-4.  **Run the Flask backend:**
-    ```bash
-    flask --app backend run
-    ```
-    The backend will be accessible at `http://127.0.0.1:5000`.
+## Testing
 
-5. **Test**:
-    ```bash
-    curl http://127.0.0.1:5000/help
-    ```
-    or
-    ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{}' http://127.0.0.1:5000/run_simulation
-    ```
-
-### Dockerization
-
-To build the Docker image:
+Run the test suite to ensure code quality:
 
 ```bash
-docker build -t fns-api .
+pytest --cov=backend tests/
 ```
 
-## GCloud Deployment Configuration
+## Docker Deployment
 
-As a prerequisite is mandatory to apply the following steps to the GCloud project for the docker image build and upload to artifacts, and also service account creation and IAM policy binding:
+Build and run the Docker container locally:
+
+```bash
+# Build image
+docker build -t fns-api .
+
+# Run container
+docker run -p 5000:5000 fns-api
+```
+
+## Google Cloud Deployment Configuration
+
+The following steps are required to configure your Google Cloud project for deployment. These steps focus solely on the Google Cloud setup, not the GitHub Actions workflow configuration.
 
 [GCloud Configuration Video Tutorial](https://www.youtube.com/watch?v=KQUKDiBz3IA)
 
-This video will guide you through the necessary configurations in the Google Cloud Console to prepare your project for Cloud Run deployments using GitHub Actions.
+**Note: This video demonstrates only the Google Cloud Console configurations.** The YAML workflow files shown in the video may be outdated and are not necessary for current deployments.
 
-**Key Reminders from the Video & for Successful Deployment:**
+Follow the Google Cloud setup steps from the video, focusing on:
 
-*   **Keep Track of Docker Image Name, Project ID:**  Note these down during the video configuration, as you will need them in subsequent steps and for your GitHub Actions workflow.
-*   **Service Account Email:** Ensure you create a Service Account as shown in the video and securely download and store the JSON key file. You'll also need to note the Service Account's email address.
+* Creating a project
+* Setting up Docker repositories
+* Creating service accounts
+* Configuring permissions
 
-**Post-Configuration Steps (using `gcloud` and `cloud-run`):**
+**Key Information to Record During Setup:**
+
+* **Docker Image Name and Project ID:**  Note these for your deployment process
+* **Service Account Email:** Create a Service Account, download its JSON key file, and record the email address
+
+**Post-Configuration Steps (using `gcloud` CLI):**
 
 1.  Activate necessary apis:
 

@@ -6,3 +6,8 @@ simulation.out
 
 # macOS
 **/.DS_Store    
+
+# Test files
+.coverage
+htmlcov
+.pytest_cache
