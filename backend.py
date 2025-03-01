@@ -1,5 +1,5 @@
-# FlexNetSim Backend API
-# A Flask API for running FlexNetSim network simulations
+# Flex Net Sim Backend API
+# A Flask API for running Flex Net Sim network simulations
 
 from flask import Flask, request, jsonify
 import subprocess
@@ -152,14 +152,14 @@ def simulation_help():
   Provides API documentation in plain text format.
   
   Returns information about available endpoints, parameters,
-  and example usage for the FlexNetSim API.
+  and example usage for the Flex Net Sim API.
   
   Returns:
       Plain text response: API documentation
   """
   
   help_message = """\
-FlexNetSim API Documentation
+Flex Net Sim API Documentation
 
 ENDPOINT: /run_simulation
 METHOD: POST
@@ -242,8 +242,9 @@ with app.app_context():
   compile_success = compile_simulation()
 
 # --- Main Entry Point ---
-if not compile_success:
-  logger.error("Application startup failed: Compilation error. Check logs for details.")
-else:
-  logger.info("Starting FlexNetSim API server...")
-  app.run(host="0.0.0.0")
+if __name__ == "__main__":  
+  if not compile_success:
+    logger.error("Application startup failed: Compilation error. Check logs for details.")
+  else:
+    logger.info("Starting Flex Net Sim API server...")
+    app.run(host="0.0.0.0")

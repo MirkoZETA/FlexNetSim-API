@@ -1,10 +1,14 @@
 # Flex Net Sim Backend API
 
+[![Static Badge](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
+![Static Badge](https://img.shields.io/badge/language-python-blue)
+[![Static Badge](https://img.shields.io/badge/licese-MIT-green)](https://github.com/MirkoZETA/FlexNetSim-API/blob/master/LICENSE)
+
 A lightweight API for running optical network simulations with [Flex Net Sim C++](https://gitlab.com/DaniloBorquez/flex-net-sim).
 
 ## Overview
 
-The FlexNetSim Backend API provides:
+The Flex Net Sim Backend API provides:
 
 - **Hands-on demonstration** of optical network simulation capabilities
 - **Simplified access** to core Flex Net Sim features

@@ -1,4 +1,4 @@
-# FlexNetSim API Test Suite
+# Flex Net Sim API Test Suite
 # Tests for API endpoints and functionality
 
 from flask_testing import TestCase
