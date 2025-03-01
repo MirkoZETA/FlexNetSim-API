@@ -10,3 +10,4 @@ simulation.out
 # Test files
 .coverage
 htmlcov
+.pytest_cache
