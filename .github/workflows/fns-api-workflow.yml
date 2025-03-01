@@ -1,4 +1,4 @@
-name: FlexNetSim API Workflow
+name: pipeline
 
 on:
   # Run on pushes to any branch
