@@ -3,6 +3,8 @@
 [![Static Badge](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
 ![Static Badge](https://img.shields.io/badge/language-python-blue)
 [![Static Badge](https://img.shields.io/badge/licese-MIT-green)](https://github.com/MirkoZETA/FlexNetSim-API/blob/master/LICENSE)
+[![Test Coverage](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/test-coverage.yml)
+[![Coverage Report](https://img.shields.io/badge/coverage-report-blue)](https://mirkoZETA.github.io/FlexNetSim-API/)
 
 A lightweight API for running optical network simulations with [Flex Net Sim C++](https://gitlab.com/DaniloBorquez/flex-net-sim).
 
