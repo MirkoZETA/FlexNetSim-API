@@ -53,7 +53,7 @@ class TestRunSimulationStreamEndpoint(TestCase):
       f.write("#!/bin/bash\necho 'Line 1'\necho 'Line 2'\necho 'Error line' >&2\nexit 1")
     os.chmod("./src/simulation.out.temp", 0o755)
     
-    # Backup the real executable and replace it with our failing one
+    # Backup the real executable
     if os.path.exists("./src/simulation.out"):
       os.rename("./src/simulation.out", "./src/simulation.out.backup")
     os.rename("./src/simulation.out.temp", "./src/simulation.out")

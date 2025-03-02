@@ -179,7 +179,7 @@ def simulation_help():
     mu: > 0 (default: 10.0)
     network: "NSFNet", "Cost239", "EuroCore", "GermanNet", "UKNet" (default: "NSFNet")
     bitrate: "fixed-rate" or "flex-rate" (default: "fixed-rate")
-    K: 1-10 (default: 3)
+    K: 1-6 (default: 3)
 
   EXAMPLE - STANDARD REQUEST:
     curl -X POST -H "Content-Type: application/json" \\
