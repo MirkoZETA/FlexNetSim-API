@@ -5,15 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
 ### ROADMAP
 - Switch to Flex Net Sim v0.8.2.
 - Enhance previous algorithms.
 - Add algorithm BestFit.
 - Switch to new domain.
 
-## [1.1.1] - 2023-03-01
+## [2.0.0] - 2025-03-xx
+
+### Added
+- New `/run_simulation_stream` endpoint for streaming simulation results in real-time
+- Refactored backend code to reduce duplication and improve maintainability
+- Added unit tests for the streaming endpoint
+- Modified `simulator.hpp` to flush stdout after each line for better streaming support (see `src/README.md`)
+- Improved help endpoint with more concise documentation
+
+### Changed
+- Standardized API response format for better consistency:
+  - Success responses now use `status: "success"` with data in a `data` field
+  - Error responses now use `status: "error"` with a `message` and detailed `error` fields
+  - Streaming responses include event types and structured JSON data
+- Reorganized test suite into separate files for better maintainability
+- Improved parameter validation with descriptive error messages
+- Changed error response code from 500 to 400 for invalid parameters
+- Moved parameter validation from C++ to the API layer for better user experience
+
+## [1.1.1] - 2025-03-01
 
 ### Added
 - Deployed coverage to pages
@@ -60,5 +77,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API allocated in cloud run.
 - Documentation README for the process of develop/deployment located in [workflows](https://github.com/MirkoZETA/FlexNetSim-API/tree/master/.github/workflows/README_DEV.md).
 
-[1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
 [1.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.0.0
+[1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
+[2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.0

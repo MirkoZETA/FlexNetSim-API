@@ -29848,7 +29848,7 @@ void Simulator::printRow(double percentage) {
   std::cout << std::setfill(' ') << std::setw(9) << std::right
             << std::scientific << this->wilsonCI() << " |";
 
-  std::cout << std::setw(1) << "\n";
+  std::cout << std::setw(1) << "\n" << std::flush;
 }
 
 int Simulator::eventRoutine(void) {

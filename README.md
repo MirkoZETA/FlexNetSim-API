@@ -34,7 +34,7 @@ For development and deployment instructions for this API, refer to [README_DEV.m
 
 ### `/run_simulation` (POST)
 
-Runs a network simulation with the provided parameters.
+Runs a network simulation with the provided parameters and returns complete results.
 
 #### Request Parameters
 
@@ -74,9 +74,84 @@ curl -X POST -H "Content-Type: application/json" \
 https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation
 ```
 
+#### Response Format
+
+```json
+{
+  "status": "success",
+  "data": "simulation results as text..."
+}
+```
+
 #### Response Codes
 
-- `200 OK`: Success. Returns `{"output": "...", "error": ""}`
+- `200 OK`: Success
+- `400 Bad Request`: Invalid parameters
+- `500 Internal Server Error`: Server-side error
+
+### `/run_simulation_stream` (POST)
+
+Runs a network simulation with the provided parameters and streams results in real-time using Server-Sent Events (SSE).
+
+#### Request Parameters
+
+Same parameters as `/run_simulation` endpoint.
+
+#### Example: Streaming with Default Parameters
+
+```bash
+curl -N -X POST -H "Content-Type: application/json" -d '{}' \
+  http://localhost:5000/run_simulation_stream
+```
+
+#### Example: Streaming with Custom Parameters
+
+```bash
+curl -N -X POST -H "Content-Type: application/json" \
+-d '{ 
+  "algorithm": "FirstFit",
+  "networkType": 1,
+  "goalConnections": 5000000,
+  "confidence": 0.05,
+  "lambdaParam": 120,
+  "mu": 1,
+  "network": "NSFNet",
+  "bitrate": "fixed-rate"
+}' \
+http://localhost:5000/run_simulation_stream
+```
+
+#### Response Format
+
+The endpoint returns a stream of Server-Sent Events with the following event types:
+
+1. **Start Event**:
+   ```
+   event: start
+   data: {"status": "started", "message": "Simulation started"}
+   ```
+
+2. **Data Events** (multiple events, one per line of output):
+   ```
+   event: data
+   data: {"status": "running", "data": "Line of simulation output"}
+   ```
+
+3. **End Event**:
+   ```
+   event: end
+   data: {"status": "completed", "message": "Simulation completed"}
+   ```
+
+4. **Error Event** (only if an error occurs):
+   ```
+   event: error
+   data: {"status": "error", "message": "Error description", "error": "Detailed error"}
+   ```
+
+#### Response Codes
+
+- `200 OK`: Success (stream starts)
 - `400 Bad Request`: Invalid parameters
 - `500 Internal Server Error`: Server-side error
 

@@ -11,3 +11,6 @@ simulation.out
 .coverage
 htmlcov
 .pytest_cache
+
+# Claude Code
+CLAUDE.md
