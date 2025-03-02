@@ -13,12 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add algorithm BestFit.
 - Switch to new domain.
 
+## [1.1.1] - 2023-03-01
+
+### Added
+- Deployed coverage to pages
+
+### Fixed
+- Fixed pipeline for GitHub pages
+- Fixed badges
+
 ## [1.1.0] - 2025-03-01
 
 ### Added
 - Comprehensive unit tests for all API endpoints and functions
 - Test coverage reporting with pytest-cov
-- GitHub Pages integration for coverage reports
 - Coverage badges in README.md
 - New GitHub Actions workflow for test coverage
 
