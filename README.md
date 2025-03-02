@@ -101,7 +101,7 @@ Same parameters as `/run_simulation` endpoint.
 
 ```bash
 curl -N -X POST -H "Content-Type: application/json" -d '{}' \
-  http://localhost:5000/run_simulation_stream
+  https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation_stream
 ```
 
 #### Example: Streaming with Custom Parameters
@@ -118,7 +118,7 @@ curl -N -X POST -H "Content-Type: application/json" \
   "network": "NSFNet",
   "bitrate": "fixed-rate"
 }' \
-http://localhost:5000/run_simulation_stream
+https://fns-api-cloud-run-787143541358.us-central1.run.app/run_simulation_stream
 ```
 
 #### Response Format
