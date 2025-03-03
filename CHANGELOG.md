@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added unit tests for the streaming endpoint
 - Modified `simulator.hpp` to flush stdout after each line for better streaming support (see `src/README.md`)
 - Improved help endpoint with more concise documentation
+- Enabled CORS only for `/run_simulation_stream` endpoint to allow controlled API access
 
 ### Changed
 - Standardized API response format for better consistency:

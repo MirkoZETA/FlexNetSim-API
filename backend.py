@@ -2,11 +2,14 @@
 # A Flask API for running Flex Net Sim network simulations
 
 from flask import Flask, request, Response, stream_with_context
+from flask_cors import CORS
 from utils.helpers import *
 
 # --- Flask Application Setup --- 
 app = Flask(__name__)
-#CORS(app, resources={r"/run_simulation": {"origins": 'http://localhost:5000'}})
+
+# Enable CORS only for /run_simulation_stream
+CORS(app, resources={r"/run_simulation_stream": {"origins": "*"}})
 
 @app.route("/run_simulation", methods=["POST"])
 def run_simulation():
