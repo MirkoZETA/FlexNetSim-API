@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add algorithm BestFit.
 - Switch to new domain.
 
-## [2.0.0] - 2025-03-xx
+## [2.0.0] - 2025-03-03
 
 ### Added
 - New `/run_simulation_stream` endpoint for streaming simulation results in real-time
@@ -79,4 +79,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [1.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.0.0
 [1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
+[1.1.1]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/pipeline-fix
 [2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.0

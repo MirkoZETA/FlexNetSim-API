@@ -14,7 +14,7 @@ class TestCompilation(TestCase):
 
   def test_compilation_failure(self):
     os.rename("./src/main.cpp", "./src/main.cpp.temp")
-    compile_result = compile_simulation(True)
+    compile_result = compile_simulation(debug=True)
     os.rename("./src/main.cpp.temp", "./src/main.cpp")
     self.assertFalse(compile_result)
 
@@ -25,7 +25,7 @@ class TestCompilation(TestCase):
 
     os.rename("./src/main.cpp", "./src/main.cpp.temp")
     os.rename("./src/test_main.cpp", "./src/main.cpp")
-    compile_result = compile_simulation(True)
+    compile_result = compile_simulation(debug=True)
     self.assertFalse(compile_result)
 
     response = self.client.post('/run_simulation',
@@ -36,5 +36,5 @@ class TestCompilation(TestCase):
     os.rename("./src/main.cpp.temp", "./src/main.cpp")
 
   def test_compilation_success(self):
-    compile_result = compile_simulation(True)
+    compile_result = compile_simulation(debug=True)
     self.assertTrue(compile_result)

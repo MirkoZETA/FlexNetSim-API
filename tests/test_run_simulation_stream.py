@@ -28,8 +28,12 @@ class TestRunSimulationStreamEndpoint(TestCase):
                               data=json.dumps(simulation_input),
                               content_type='application/json')
     self.assert200(response)
+    
+    # Assert response is a server-sent event stream
     self.assertEqual(response.mimetype, "text/event-stream")
+    # Assert Cache-Control header prevents caching
     self.assertEqual(response.headers.get("Cache-Control"), "no-cache")
+    # Assert Connection header is 'keep-alive' for persistent connection
     self.assertEqual(response.headers.get("Connection"), "keep-alive")
     
   def test_stream_malformed_json(self):
