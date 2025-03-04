@@ -43,8 +43,11 @@ This guide helps developers set up, test, and deploy the Flex Net Sim Backend AP
    # Test help endpoint
    curl http://127.0.0.1:5000/help
    
-   # Test simulation endpoint
+   # Test standard simulation endpoint
    curl -X POST -H "Content-Type: application/json" -d '{}' http://127.0.0.1:5000/run_simulation
+   
+   # Test streaming simulation endpoint
+   curl -N -X POST -H "Content-Type: application/json" -d '{"goalConnections": 50000}' http://127.0.0.1:5000/run_simulation_stream
    ```
 
 ## Testing
@@ -119,7 +122,11 @@ Follow the Google Cloud setup steps from the video, focusing on:
     Use the `curl` command with the `ENDPOINT-URL` you obtained from the previous steps to test your deployed API. Replace `YOUR-ENDPOINT-URL` with the actual `ENDPOINT-URL`.
 
     ```bash
+    # Test standard endpoint
     curl -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "networkType": 1, "bitrate": "fixed-rate"}' <YOUR-ENDPOINT-URL>/run_simulation
+    
+    # Test streaming endpoint
+    curl -N -X POST -H "Content-Type: application/json" -d '{"algorithm": "FirstFit", "goalConnections": 5000000}' <YOUR-ENDPOINT-URL>/run_simulation_stream
     ``` 
 
     Remember that depending on the authetification preferences you might need to authetificate to send request to the Endpoint just created.
