@@ -3,6 +3,7 @@ simulation.out
 
 # Exclude local IDE settings
 .vscode/
+.venv/
 
 # macOS
 **/.DS_Store    
