@@ -153,11 +153,11 @@ def parse_simulation_parameters(data):
     }), 400)
   
   # Validate algorithm
-  if algorithm not in ["FirstFit", "ExactFit"]:
+  if algorithm not in ["FirstFit", "BestFit"]:
     return False, (jsonify({
       "status": "error",
       "message": "Invalid parameters",
-      "error": "algorithm must be FirstFit or ExactFit"
+      "error": "algorithm must be FirstFit or BestFit"
     }), 400)
   
   # Validate network

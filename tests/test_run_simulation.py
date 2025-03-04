@@ -151,7 +151,7 @@ class TestRunSimulationEndpoint(TestCase):
     response_json = json.loads(response.data.decode('utf-8'))
     self.assertEqual(response_json.get("status"), "error")
     self.assertEqual(response_json.get("message"), "Invalid parameters")
-    self.assertIn("algorithm must be FirstFit or ExactFit", response_json.get("error"))
+    self.assertIn("algorithm must be FirstFit or BestFit", response_json.get("error"))
 
   def test_invalid_K_param(self):
     simulation_input = { "K": 0 }

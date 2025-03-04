@@ -6,30 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### ROADMAP
-- Switch to Flex Net Sim v0.8.2.
-- Enhance previous algorithms.
-- Add algorithm BestFit.
 - Switch to new domain.
 
 ## [2.0.0] - 2025-03-03
 
 ### Added
-- New `/run_simulation_stream` endpoint for streaming simulation results in real-time
-- Refactored backend code to reduce duplication and improve maintainability
-- Added unit tests for the streaming endpoint
-- Modified `simulator.hpp` to flush stdout after each line for better streaming support (see `src/README.md`)
-- Improved help endpoint with more concise documentation
-- Enabled CORS only for `/run_simulation_stream` endpoint to allow controlled API access
+- New `/run_simulation_stream` endpoint for streaming simulation results in real-time:
+  - Streaming responses include event types and structured JSON data.
+- Refactored backend code to reduce duplication and improve maintainability.
+- Added unit tests for the streaming endpoint.
+- Modified `simulator.hpp` to flush `stdout` after each line for better streaming support (see `src/README.md`).
+- Improved the `\help` endpoint with more concise documentation.
+- Enabled CORS only for the `/run_simulation_stream` endpoint to allow controlled API access.
 
 ### Changed
+- Switched to Flex Net Sim v0.8.2.
 - Standardized API response format for better consistency:
-  - Success responses now use `status: "success"` with data in a `data` field
-  - Error responses now use `status: "error"` with a `message` and detailed `error` fields
-  - Streaming responses include event types and structured JSON data
-- Reorganized test suite into separate files for better maintainability
-- Improved parameter validation with descriptive error messages
-- Changed error response code from 500 to 400 for invalid parameters
-- Moved parameter validation from C++ to the API layer for better user experience
+  - Success responses now use `status: "success"` with data in a `data` field.
+  - Error responses now use `status: "error"` with a `message` and detailed `error` fields.
+- Reorganized the test suite into separate files for better maintainability.
+- Improved parameter validation with descriptive error messages.
+- Changed the error response code from `500` to `400` for invalid parameters.
+- Moved parameter validation from C++ to the API layer for a better user experience.
+- Replaced the `ExactFit` algorithm with `BestFit`.
+- Enhanced algorithms
+
 
 ## [1.1.1] - 2025-03-01
 
@@ -65,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This API hopefully serves as playground to all new users of Flex Net Sim C++ simulation library.
 - The current version utilizes Flex Net Sim v0.8.1.
 - `/run_simulation` endpoint for simulation includes parameters such as:
-    - `algorithm`: FirstFit, ExactFit.
+    - `algorithm`: FirstFit, BestFit.
     - `networkType`: Only 1 (EON) available for now.
     - `goalConnections`: 1 to 10,000,000.
     - `confidence`: significance level (alpha) greater than zero.

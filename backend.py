@@ -4,6 +4,8 @@
 from flask import Flask, request, Response, stream_with_context
 from flask_cors import CORS
 from utils.helpers import *
+import time
+import json
 
 # --- Flask Application Setup --- 
 app = Flask(__name__)
@@ -76,11 +78,11 @@ def run_simulation():
 def run_simulation_stream():
   """
   Executes a network simulation with the provided parameters and streams the output.
-  
+
   Accepts a JSON request with simulation parameters and runs the C++ executable
   with those parameters. Returns a streaming response with simulation results
   as they become available.
-  
+
   Returns:
       Streaming response: Line-by-line simulation data
   """
@@ -88,15 +90,15 @@ def run_simulation_stream():
   is_valid, error_response = validate_simulation_prerequisites()
   if not is_valid:
     return error_response
-    
+
   try:
     data = request.get_json()
-    
+
     # Parse and validate parameters
     is_valid, result = parse_simulation_parameters(data)
     if not is_valid:
       return result
-    
+
     # Build command
     command = build_simulation_command(result)
     logger.debug(f"Running streaming simulation with command: {' '.join(command)}")
@@ -104,37 +106,41 @@ def run_simulation_stream():
     # Create streaming function
     def generate():
       # Send initial event
-      yield f"event: start\ndata: {{\n  \"status\": \"started\",\n  \"message\": \"Simulation started\"\n}}\n\n"
-      
+      yield f"event: start\n"
+      yield f"data: {json.dumps({'status': 'started', 'message': 'Simulation started', 'timestamp': time.time()})}\n\n"
+
       # Execute simulation with streaming output
       process = subprocess.Popen(
-        command, 
-        stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE, 
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
         bufsize=1  # Line buffered
       )
-      
+
       # Stream stdout
       for line in iter(process.stdout.readline, ""):
         if line:
-          yield f"event: data\ndata: {{\n  \"status\": \"running\",\n  \"data\": \"{line.strip()}\"\n}}\n\n"
-          
+          yield f"event: data\n"
+          yield f"data: {json.dumps({'status': 'running', 'message': line.strip(), 'timestamp': time.time()})}\n\n"
+
       # Check for errors at the end
       process.stdout.close()
       return_code = process.wait()
-      
+
       if return_code != 0:
-        error = process.stderr.read()
-        yield f"event: error\ndata: {{\n  \"status\": \"error\",\n  \"message\": \"Simulation execution failed\",\n  \"error\": \"{error.strip()}\"\n}}\n\n"
-        logger.error(f"Streaming simulation failed. Return code: {return_code}, Error: {error.strip()}")
+        error = process.stderr.read().strip()
+        yield f"event: error\n"
+        yield f"data: {json.dumps({'status': 'error', 'message': 'Simulation execution failed', 'error': error, 'timestamp': time.time()})}\n\n"
+        logger.error(f"Streaming simulation failed. Return code: {return_code}, Error: {error}")
 
       # Close the stream resources
       process.stderr.close()
-      
+
       # Send completion event
-      yield f"event: end\ndata: {{\n  \"status\": \"completed\",\n  \"message\": \"Simulation completed\"\n}}\n\n"
-    
+      yield f"event: end\n"
+      yield f"data: {json.dumps({'status': 'completed', 'message': 'Simulation completed', 'timestamp': time.time()})}\n\n"
+
     return Response(
       stream_with_context(generate()),
       mimetype="text/event-stream",
@@ -150,8 +156,9 @@ def run_simulation_stream():
     logger.exception("Unexpected error during streaming simulation:")
     return jsonify({
       "status": "error",
-      "message": "An unexpected error occurred", 
-      "error": str(e)
+      "message": "An unexpected error occurred",
+      "error": str(e),
+      "timestamp": time.time()
     }), 500
 
 @app.route("/help", methods=["GET"])
@@ -174,7 +181,7 @@ def simulation_help():
     - /run_simulation_stream (POST): Streams results in real-time using Server-Sent Events
 
   COMMON PARAMETERS (JSON body, all optional):
-    algorithm: "FirstFit" or "ExactFit" (default: "FirstFit")
+    algorithm: "FirstFit" or "BestFit" (default: "FirstFit")
     networkType: 1 for EON (default: 1)
     goalConnections: 1-10000000 (default: 100000)
     confidence: 0-1 (default: 0.05)
@@ -206,7 +213,7 @@ def simulation_help():
         data: {"status": "started", "message": "Simulation started"}
 
         event: data
-        data: {"status": "running", "data": "Line of output"}
+        data: {"status": "running", "message": "Line of output"}
 
         event: end
         data: {"status": "completed", "message": "Simulation completed"}

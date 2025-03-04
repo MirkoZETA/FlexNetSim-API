@@ -3,7 +3,7 @@
 
 static const unsigned VERSION_MAJOR = 0;
 static const unsigned VERSION_MINOR = 8;
-static const unsigned VERSION_REVISION = 1;
+static const unsigned VERSION_REVISION = 2;
 
 #endif
 #ifndef __RANDOM_VARIABLE_H__
@@ -29211,7 +29211,9 @@ long long Event::getIdConnection() { return this->idConnection; }
 #define USE_ALLOC_FUNCTION(fun, simObject) simObject.setAllocator(new f_##fun);
 #define SRC src
 #define DST dst
+#define REQ_SLOTS_FIXED bitRate.getNumberOfSlots(0)
 #define REQ_SLOTS(pos) bitRate.getNumberOfSlots(pos)
+#define REQ_REACH_FIXED bitRate.getReach(0)
 #define REQ_REACH(pos) bitRate.getReach(pos)
 #define REQ_MODULATION(pos) bitRate.getModulation(pos)
 #define NUMBER_OF_MODULATIONS bitRate.getNumberOfModulations()
@@ -29239,11 +29241,11 @@ long long Event::getIdConnection() { return this->idConnection; }
 #define VECTOR_OF_BANDS(route, linkIndex) \
   (*this->path)[src][dst][route][linkIndex]->getBands()
 #define NUMBER_OF_LINKS(route) (*this->path)[src][dst][route].size()
-#define ALLOC_SLOTS(link, from, to) con.addLink(link, from, from + to);
+#define ALLOC_SLOTS(link, from, to) con.addLink(link, from, from + to)
 #define ALLOC_SLOTS_SDM(link, core, mode, from, to) \
   con.addLink(link, core, mode, from, from + to);
 #define ALLOC_SLOTS_MB(link, band, from, to) \
-  con.addLink(link, band, from, from + to);
+  con.addLink(link, band, from, from + to)
 #define BEGIN_UNALLOC_CALLBACK_FUNCTION \
   void _f_unallocate_function(Connection c, double t, Network *n)
 #define END_UNALLOC_CALLBACK_FUNCTION  // end function
@@ -29637,6 +29639,8 @@ Simulator::Simulator(std::string networkFilename, std::string pathFilename,
   this->bitRatesDefault = BitRate::selectBitrateMethod(bitrateFilename, networkType);
   this->allocatedConnections = 0;
 }
+
+// TODO: Add default values bit rates for other networkTypes.
 
 Simulator::~Simulator() {}
 

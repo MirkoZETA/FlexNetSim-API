@@ -3,3 +3,4 @@ gunicorn
 pytest
 pytest-cov
 flask-testing
+flask-cors

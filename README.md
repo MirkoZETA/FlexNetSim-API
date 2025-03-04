@@ -1,6 +1,6 @@
 # Flex Net Sim Backend API
 
-[![Static Badge](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
+[![Static Badge](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
 ![Static Badge](https://img.shields.io/badge/language-python-blue)
 [![Static Badge](https://img.shields.io/badge/licese-MIT-green)](https://github.com/MirkoZETA/FlexNetSim-API/blob/master/LICENSE)
 [![Static Badge](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/fns-api-workflow.yml/badge.svg)](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/fns-api-workflow.yml)
@@ -40,7 +40,7 @@ Runs a network simulation with the provided parameters and returns complete resu
 
 | Parameter       | Type      | Description                | Allowed Values & Constraints                                   | Default   |
 |---------------|---------|----------------------------|-------------------------------------------------|-----------|
-| `algorithm`    | `string`  | RSA algorithm              | `FirstFit`, `ExactFit`                         | `FirstFit` |
+| `algorithm`    | `string`  | RSA algorithm              | `FirstFit`, `BestFit`                         | `FirstFit` |
 | `networkType`  | `integer` | Network type               | Only `1` (EON) supported                        | `1`       |
 | `goalConnections` | `integer` | Target connection requests | Must be > 0 and < 10,000,000                   | `100000`  |
 | `confidence`   | `float`   | Confidence level           | Must be > 0 and < 1.0                           | `0.05`    |
@@ -134,7 +134,7 @@ The endpoint returns a stream of Server-Sent Events with the following event typ
 2. **Data Events** (multiple events, one per line of output):
    ```
    event: data
-   data: {"status": "running", "data": "Line of simulation output"}
+   data: {"status": "running", "message": "Line of simulation output"}
    ```
 
 3. **End Event**:
