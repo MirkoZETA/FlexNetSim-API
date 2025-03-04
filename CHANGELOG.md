@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ROADMAP
 - Switch to new domain.
 
+## [2.0.1] - 2025-03-04
+
+### Fixed
+- Fixed docker image for deployment
+
 ## [2.0.0] - 2025-03-03
 
 ### Added
@@ -86,3 +91,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
 [1.1.1]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/pipeline-fix
 [2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.0
+[2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.1
