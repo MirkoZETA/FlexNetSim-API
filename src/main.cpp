@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     USE_ALLOC_FUNCTION(FirstFit, sim);
     break;
 
-  case 'E':
+  case 'B':
     USE_ALLOC_FUNCTION(BestFit, sim);
     break;
 
@@ -159,13 +159,17 @@ int main(int argc, char *argv[])
     break;
   }
 
-  USE_ALLOC_FUNCTION(FirstFit, sim);
   sim.setGoalConnections(goalConnections);
   sim.setConfidence(confidence);
   sim.setLambda(lambda);
   sim.setMu(mu);
   sim.init();
   sim.run();
+
+  // Print the results with flush
+  // Set the precision to 6 decimal places
+  std::cout.precision(4);
+  std::cout << "final_blocking:   " << sim.getBlockingProbability() << "\n" << std::flush;
 
   return 0;
 }

@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced the `ExactFit` algorithm with `BestFit`.
 - Enhanced algorithms
 
+### Fixed
+- Fixed error in main.cpp always using FirstFit
+- Fixed error in main.cpp always using Fixed-Rate
 
 ## [1.1.1] - 2025-03-01
 
