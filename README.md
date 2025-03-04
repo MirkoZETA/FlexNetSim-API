@@ -1,6 +1,6 @@
 # Flex Net Sim Backend API
 
-[![Static Badge](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
+[![Static Badge](https://img.shields.io/badge/version-2.0.1-blue)](https://github.com/MirkoZETA/FlexNetSim-API)
 ![Static Badge](https://img.shields.io/badge/language-python-blue)
 [![Static Badge](https://img.shields.io/badge/licese-MIT-green)](https://github.com/MirkoZETA/FlexNetSim-API/blob/master/LICENSE)
 [![Static Badge](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/fns-api-workflow.yml/badge.svg)](https://github.com/MirkoZETA/FlexNetSim-API/actions/workflows/fns-api-workflow.yml)
