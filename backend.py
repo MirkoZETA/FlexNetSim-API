@@ -6,7 +6,6 @@ from flask_cors import CORS
 from utils.helpers import *
 import time
 import json
-import html
 
 # --- Flask Application Setup --- 
 app = Flask(__name__)
@@ -99,9 +98,6 @@ def run_simulation_stream():
     is_valid, result = parse_simulation_parameters(data)
     if not is_valid:
       return result
-
-    # Escape result to prevent XSS
-    result = html.escape(result)
 
     # Build command
     command = build_simulation_command(result)
