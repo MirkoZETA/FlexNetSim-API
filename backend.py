@@ -157,7 +157,6 @@ def run_simulation_stream():
     return jsonify({
       "status": "error",
       "message": "An unexpected error occurred",
-      "error": str(e),
       "timestamp": time.time()
     }), 500
 
