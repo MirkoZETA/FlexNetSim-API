@@ -27,7 +27,7 @@ class TestCompilation(TestCase):
 
     # Test with invalid main.cpp file
     if os.path.exists("./src/test_main.cpp"):
-      with temporarily_rename_file("./src/main.cpp", "./src.main.cpp.temp"):
+      with temporarily_rename_file("./src/main.cpp", "./src/main.cpp.temp"):
         with temporarily_rename_file("./src/test_main.cpp", "./src/main.cpp"):
           compile_result = compile_simulation(debug=True)
           self.assertFalse(compile_result)

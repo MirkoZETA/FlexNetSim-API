@@ -5,6 +5,7 @@ import os
 from flask_testing import TestCase
 from backend import app
 from utils.helpers import *
+from tests.test_utils import temporarily_rename_file
 
 class TestHelpers(TestCase):
     """Tests for utils functions"""
@@ -15,20 +16,18 @@ class TestHelpers(TestCase):
 
     def test_compile_simulation(self):
         # Test compilation failure
-        os.rename("./src/main.cpp", "./src/main.cpp.temp")
-        self.assertFalse(compile_simulation(debug=True))
-        os.rename("./src/main.cpp.temp", "./src/main.cpp")
+        with temporarily_rename_file("./src/main.cpp", "./src/main.cpp.temp"):
+            self.assertFalse(compile_simulation(debug=True))
 
         # Test compilation success
         self.assertTrue(compile_simulation(debug=True))
 
     def test_validate_simulation_prerequisites(self):
         # Test when executable is not found
-        os.rename("./src/simulation.out", "./src/simulation.out.temp_error")
-        is_valid, response = validate_simulation_prerequisites()
-        self.assertFalse(is_valid)
-        self.assertEqual(response[1], 500)
-        os.rename("./src/simulation.out.temp_error", "./src/simulation.out")
+        with temporarily_rename_file("./src/simulation.out", "./src/simulation.out.temp_error"):
+            is_valid, response = validate_simulation_prerequisites()
+            self.assertFalse(is_valid)
+            self.assertEqual(response[1], 500)
 
         # Test when executable is found
         self.assertTrue(compile_simulation(debug=True))
