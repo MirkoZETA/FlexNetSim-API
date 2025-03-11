@@ -92,6 +92,62 @@ def parse_simulation_parameters(data):
   bitrate = data.get("bitrate", "fixed-rate")
   K = data.get("K", 3)
   
+  # Validate data types
+  if not isinstance(algorithm, str):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "algorithm must be a string"
+    }), 400)
+  if not isinstance(networkType, int):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "networkType must be an integer"
+    }), 400)
+  if not isinstance(goalConnections, int):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "goalConnections must be an integer"
+    }), 400)
+  if not isinstance(confidence, (int, float)):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "confidence must be a number"
+    }), 400)
+  if not isinstance(lambdaParam, (int, float)):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "lambdaParam must be a number"
+    }), 400)
+  if not isinstance(mu, (int, float)):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "mu must be a number"
+    }), 400)
+  if not isinstance(network, str):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "network must be a string"
+    }), 400)
+  if not isinstance(bitrate, str):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "bitrate must be a string"
+    }), 400)
+  if not isinstance(K, int):
+    return False, (jsonify({
+      "status": "error",
+      "message": "Invalid parameters",
+      "error": "K must be an integer"
+    }), 400)
+  
   # Validate networkType
   if networkType != 1:
     return False, (jsonify({

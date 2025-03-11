@@ -2,6 +2,7 @@
 
 from flask_testing import TestCase
 from backend import app
+import pytest
 
 class TestHelpEndpoint(TestCase):
   """Tests for help endpoint"""
