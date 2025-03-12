@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ROADMAP
 - Switch to new domain.
 
-## [2.0.2] - 2025-03-11
+## [2.0.2] - 2025-03-12
 
 ### Added
 - Comprehensive unit tests for parameter validation in simulation requests
@@ -107,5 +107,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v1.0.0...v1.1.0
 [1.1.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v1.1.0...pipeline-fix
 [2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/pipeline-fix...v2.0.0
-[2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.1...v2.0.0
-[2.0.2]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.2...v2.0.1
+[2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.0...v2.0.1
+[2.0.2]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.1...v2.0.2
