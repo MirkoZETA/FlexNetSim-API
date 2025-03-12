@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive unit tests for parameter validation in simulation requests
 - Better validation error messages for all simulation parameters
 - Helper methods for test assertions to improve code readability
+- Added fallback mechanism to recompile the simulation executable if prerequisites are not met in both `/run_simulation` and `/run_simulation_stream` endpoints.
 
 ### Changed
 - Enhanced test coverage for the helpers module

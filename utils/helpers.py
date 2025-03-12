@@ -42,7 +42,7 @@ def compile_simulation(debug=False):
     return False
   
   if debug: COMPILE_ERROR = None
-  logger.info("Simulation compiled successfully")
+  logger.info("File compiled successfully")
   return True
 
 def validate_simulation_prerequisites():
