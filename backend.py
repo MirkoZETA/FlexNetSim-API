@@ -71,8 +71,7 @@ def run_simulation():
     logger.exception("Unexpected error during simulation:")
     return jsonify({
       "status": "error",
-      "message": "An unexpected error occurred", 
-      "error": str(e)
+      "message": "An unexpected error occurred"
     }), 500
 
 @app.route("/run_simulation_stream", methods=["POST"])
@@ -159,7 +158,6 @@ def run_simulation_stream():
     return jsonify({
       "status": "error",
       "message": "An unexpected error occurred",
-      "error": str(e),
       "timestamp": time.time()
     }), 500
 
