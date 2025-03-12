@@ -1,4 +1,4 @@
-## Modification Notice: simulation.hpp
+## Modification Notice: `simulation.hpp`
 
 This document describes a modification made to the `simulation.hpp` file, specifically in the `Simulator::printRow` function. The purpose of this change is to enable real-time streaming of simulation output when used with the API, ensuring that data is delivered to the client as soon as it is available.
 

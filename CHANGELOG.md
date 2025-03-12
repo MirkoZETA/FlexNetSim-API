@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ROADMAP
 - Switch to new domain.
 
+## [2.0.2] - 2025-03-12
+
+### Added
+- Comprehensive unit tests for parameter validation in simulation requests
+- Better validation error messages for all simulation parameters
+- Helper methods for test assertions to improve code readability
+- Added fallback mechanism to recompile the simulation executable if prerequisites are not met in both `/run_simulation` and `/run_simulation_stream` endpoints.
+
+### Changed
+- Enhanced test coverage for the helpers module
+- Improved test structure with dedicated test methods per parameter
+
+### Fixed
+- Edge case handling in parameter validation
+
+
 ## [2.0.1] - 2025-03-04
 
 ### Fixed
@@ -88,7 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation README for the process of develop/deployment located in [workflows](https://github.com/MirkoZETA/FlexNetSim-API/tree/master/.github/workflows/README_DEV.md).
 
 [1.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.0.0
-[1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v1.1.0
-[1.1.1]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/pipeline-fix
-[2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.0
-[2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/releases/tag/v2.0.1
+[1.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v1.0.0...v1.1.0
+[1.1.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v1.1.0...pipeline-fix
+[2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/pipeline-fix...v2.0.0
+[2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.0...v2.0.1
+[2.0.2]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.1...v2.0.2

@@ -55,7 +55,7 @@ This guide helps developers set up, test, and deploy the Flex Net Sim Backend AP
 Run the test suite to ensure code quality:
 
 ```bash
-pytest --cov=backend tests/
+pytest --cov=backend --cov=utils tests/
 ```
 
 ## Docker Deployment

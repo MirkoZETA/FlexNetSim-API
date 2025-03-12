@@ -27,6 +27,7 @@ def run_simulation():
   # Validate prerequisites
   is_valid, error_response = validate_simulation_prerequisites()
   if not is_valid:
+    compile_simulation(True)
     return error_response
     
   try:
@@ -88,6 +89,7 @@ def run_simulation_stream():
   # Validate prerequisites
   is_valid, error_response = validate_simulation_prerequisites()
   if not is_valid:
+    compile_simulation(True)
     return error_response
 
   try:
