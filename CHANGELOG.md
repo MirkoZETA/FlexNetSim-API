@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ROADMAP
 - Switch to new domain.
 
+## [2.1.0] - 2025-04-XX
+
+### Added
+- Seeds implementation and randomness in simulations.
+- FirstFit as default algorithm inside main.cpp file.
+
 ## [2.0.2] - 2025-03-12
 
 ### Added
@@ -109,3 +115,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/pipeline-fix...v2.0.0
 [2.0.1]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.0...v2.0.1
 [2.0.2]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.1...v2.0.2
+[2.1.0]: https://github.com/MirkoZETA/FlexNetSim-API/compare/v2.0.2...v2.1.0

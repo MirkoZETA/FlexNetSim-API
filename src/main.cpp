@@ -1,4 +1,6 @@
 #include "simulator.hpp"
+#include <random>
+#include <chrono>
 
 unsigned int K;
 
@@ -120,7 +122,16 @@ END_ALLOC_FUNCTION
 int main(int argc, char *argv[])
 {
   if (argc < 10) {
-    std::cerr << "Uso: " << argv[0] << " <AlgorithmName> <networkType> <goalConnections> <confidence> <lambda> <mu> <networkName> <bitrate> <K>" << std::endl;
+    std::cerr << "Uso: " << argv[0] << "<AlgorithmName> "
+                                    << "<networkType> "
+                                    << "<goalConnections> "
+                                    << "<confidence> "
+                                    << "<lambda> "
+                                    << "<mu> "
+                                    << "<networkName> "
+                                    << "<bitrate> "
+                                    << "<K> " 
+                                    << std::endl;
     return 1;
   }
 
@@ -132,8 +143,8 @@ int main(int argc, char *argv[])
   K = std::stoi(argv[9]);
   std::string networkName = argv[7];
   std::string bitrate = argv[8];
-  
-  // We're no longer doing validation here as it's handled by the API layer
+
+  std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
   
   Simulator sim(
       std::string("./networks/" + networkName + ".json"),
@@ -141,23 +152,32 @@ int main(int argc, char *argv[])
       std::string("./bitrates/" + bitrate + ".json"),
       networkType);
 
-  char algoritmo = argv[1][0];
-  switch (algoritmo)
+  std::string algoritmo = argv[1];
+
+  if (algoritmo == "FirstFit")
   {
-  case 'F':
     USE_ALLOC_FUNCTION(FirstFit, sim);
-    break;
-
-  case 'B':
-    USE_ALLOC_FUNCTION(BestFit, sim);
-    break;
-
-  default:
-    // Still keep this validation for safety
-    std::cerr << "Invalid algorithm" << std::endl;
-    return 1;
-    break;
   }
+  else if (algoritmo == "BestFit")
+  {
+    USE_ALLOC_FUNCTION(BestFit, sim);
+  }
+  else
+  {
+    USE_ALLOC_FUNCTION(FirstFit, sim);
+  }
+
+  int seedArrive = rng();
+  int seedDeparture = rng();
+  int seedBitRate = rng();
+  int seedDst = rng();
+  int seedSrc = rng();
+
+  sim.setSeedArrive(seedArrive);
+  sim.setSeedDeparture(seedDeparture);
+  sim.setSeedBitRate(seedBitRate);
+  sim.setSeedDst(seedDst);
+  sim.setSeedSrc(seedSrc);
 
   sim.setGoalConnections(goalConnections);
   sim.setConfidence(confidence);
@@ -167,7 +187,7 @@ int main(int argc, char *argv[])
   sim.run();
 
   // Print the results with flush
-  // Set the precision to 6 decimal places
+  // Set the precision to 4 decimal places
   std::cout.precision(4);
   std::cout << "final_blocking:   " << sim.getBlockingProbability() << "\n" << std::flush;
 
