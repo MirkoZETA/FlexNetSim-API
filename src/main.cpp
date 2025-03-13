@@ -152,13 +152,13 @@ int main(int argc, char *argv[])
       std::string("./bitrates/" + bitrate + ".json"),
       networkType);
 
-  std::string algoritmo = argv[1];
+  std::string algorithm = argv[1];
 
-  if (algoritmo == "FirstFit")
+  if (algorithm == "FirstFit")
   {
     USE_ALLOC_FUNCTION(FirstFit, sim);
   }
-  else if (algoritmo == "BestFit")
+  else if (algorithm == "BestFit")
   {
     USE_ALLOC_FUNCTION(BestFit, sim);
   }
